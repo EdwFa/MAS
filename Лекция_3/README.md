@@ -6,11 +6,9 @@
 
 ## Схема агентов
 
-Интерактивная схема лежит в [`diagr/agents.html`](diagr/agents.html). Та же страница открывается на вкладке «Схема агентов» в панели. Кнопки Light, Classic, Present, Export и легенда схемы остаются на английском; подписи агентов — на русском.
+Та же страница открывается на вкладке «Схема агентов» в панели. Кнопки Light, Classic, Present, Export и легенда остаются на английском; подписи агентов — на русском. Картинка ниже — это [`diagr/agents.html`](diagr/agents.html); нажатие открывает интерактивную схему.
 
-<iframe src="diagr/agents.html" title="Агенты трекера публикаций" width="100%" height="920" style="border:1px solid #e5e7eb;border-radius:12px;"></iframe>
-
-Если предпросмотр Markdown не показывает страницу внутри рамки, откройте [`diagr/agents.html`](diagr/agents.html) в браузере.
+[![Схема агентов](diagr/agents.png)](diagr/agents.html)
 
 Стрелки на схеме — это данные, которые агент возвращает вызывающему:
 

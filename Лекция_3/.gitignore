@@ -4,5 +4,4 @@ __pycache__/
 main.log
 history.json
 diagr/agents.visual-check.*
-diagr/*.png
 .DS_Store
