@@ -1,15 +1,15 @@
 # main.py
-"""Entry point for the Multi‑Agent Publication Tracker.
+"""Точка входа мульти-агентного трекера публикаций (оркестратор).
 
-It schedules the Scraper to run at a configurable interval, then for each new
-item it:
-  1. Downloads the page (or PDF if available – simplified to HTML here).
-  2. Extracts raw text using BeautifulSoup.
-  3. Summarizes the text with the summarizer agent.
-  4. Sends the summary via email using the notifier agent.
+Планировщик запускает скрапер с настраиваемым интервалом, затем для каждой
+новой записи:
+  1. Берёт аннотацию или загружает HTML-страницу публикации.
+  2. Извлекает текст с помощью BeautifulSoup.
+  3. Строит резюме агентом-суммаризатором.
+  4. При включённой почте отправляет резюме агентом-нотификатором.
 
-The scheduler uses ``APScheduler`` with a background thread, so the script can be
-run directly (`python main.py`).
+Планировщик — ``APScheduler`` в фоновом потоке, поэтому скрипт можно
+запускать напрямую (`python main.py`).
 """
 
 import logging
@@ -34,7 +34,7 @@ except ImportError:
             pass
     BackgroundScheduler = _DummyScheduler
 
-# Local modules
+# Локальные модули проекта
 from utils import load_config, logger as base_logger, extract_text_from_url, resolve_date_range
 from scraper import get_new_items, SOURCE_NAMES
 from summarizer import (
@@ -52,12 +52,12 @@ logger = logging.getLogger("archiv_tracker.main")
 
 
 def extract_text_from_url(url: str) -> str:
-    """Download *url* and return visible text.
+    """Загрузить *url* и вернуть видимый текст страницы.
 
-    This is a very simple extractor – it removes script/style tags and joins the
-    remaining text fragments. For PDFs you would need a different extractor, but
-    archiv.org usually provides an HTML details page which contains enough
-    information for a short summary.
+    Простейший извлекатель: удаляет теги script/style/noscript и склеивает
+    оставшиеся фрагменты текста. Для PDF понадобился бы другой извлекатель,
+    но у archive.org обычно есть HTML-страница details, текста которой
+    достаточно для короткого резюме.
     """
     try:
         resp = requests.get(url, timeout=15)
@@ -86,16 +86,16 @@ def process_items(
     date_from: Optional[date] = None,
     date_to: Optional[date] = None,
 ) -> List[Dict]:
-    """Core job – called by the scheduler and by the Streamlit UI.
+    """Основной цикл обработки – вызывается планировщиком и панелью Streamlit.
 
-    1. Get new items from the enabled source agents (archive.org, arXiv …).
-    2. For each item take its abstract (or page text) and summarise it.
-    3. Optionally send the summary by email.
+    1. Получить новые записи от подключённых агентов-источников (archive.org, arXiv …).
+    2. Для каждой записи взять аннотацию (или текст страницы) и построить резюме.
+    3. При необходимости отправить резюме на почту.
 
-    ``send=None`` means "take the value of ``send_email`` from config.yaml"
-    (default ``False`` – письма не отправляются, пока это явно не включено).
+    ``send=None`` означает «взять значение ``send_email`` из config.yaml»
+    (по умолчанию ``False`` – письма не отправляются, пока это явно не включено).
 
-    Returns a list of dicts: source, identifier, title, url, summary, status …
+    Возвращает список словарей: source, identifier, title, url, summary, status …
     """
     t0 = time.time()
     cfg = load_config()
@@ -155,7 +155,7 @@ def process_items(
         else:
             t1 = time.time()
             logger.info(f"   Загрузка страницы {item['url']} …")
-            raw_text = extract_text_from_url(item["url"])[:text_limit]  # limit size for speed
+            raw_text = extract_text_from_url(item["url"])[:text_limit]  # обрезаем текст ради скорости
             logger.info(f"   Текст: со страницы, {len(raw_text)} символов ({time.time() - t1:.1f} с)")
         if not raw_text:
             logger.warning(f"   ⚠️ Текст не получен – публикация пропущена")

@@ -1,7 +1,7 @@
 # notifier.py
-"""Notifier agent – sends summaries via email.
+"""Агент-нотификатор – отправляет резюме по электронной почте.
 
-Uses ``smtplib`` with TLS. Credentials are read from the configuration file.
+Использует ``smtplib`` с TLS (STARTTLS). Учётные данные берутся из config.yaml.
 """
 
 import smtplib
@@ -16,11 +16,11 @@ logger = logging.getLogger("archiv_tracker.notifier")
 
 
 def send_email(subject: str, body: str, email_cfg: Dict) -> bool:
-    """Send an email using the provided configuration.
+    """Отправить письмо с заданными настройками.
 
-    ``email_cfg`` must contain ``smtp_server``, ``smtp_port``, ``username``,
-    ``password``, ``from_address`` and ``to_address``.
-    Returns ``True`` on success, ``False`` otherwise.
+    ``email_cfg`` должен содержать ``smtp_server``, ``smtp_port``, ``username``,
+    ``password``, ``from_address`` и ``to_address``.
+    Возвращает ``True`` при успехе, иначе ``False``.
     """
     try:
         message = MIMEMultipart()

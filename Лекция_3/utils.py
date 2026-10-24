@@ -1,10 +1,11 @@
 # utils.py
-"""Utility functions shared across agents.
+"""Вспомогательные функции, общие для всех агентов.
 
-- Configuration loading (YAML)
-- Simple file‑based history store (JSON)
-- Central logger configuration
-- Helper to fetch and clean text from a URL (used by the main script)
+- Загрузка и сохранение конфигурации (YAML)
+- Простое файловое хранилище истории (JSON)
+- Настройка общего логгера
+- Диапазоны дат и разбор тем на слова
+- Загрузка и очистка текста страницы по URL
 """
 
 import calendar
@@ -20,14 +21,14 @@ from typing import List, Dict, Optional, Tuple
 import yaml
 
 # ---------------------------------------------------------------------------
-# Base paths
+# Базовые пути
 # ---------------------------------------------------------------------------
 BASE_DIR = Path(__file__).parent
 CONFIG_PATH = BASE_DIR / "config.yaml"
 HISTORY_PATH = BASE_DIR / "history.json"
 
 # ---------------------------------------------------------------------------
-# Logger (single shared instance)
+# Логгер (один общий экземпляр)
 # ---------------------------------------------------------------------------
 LOG_PATH = BASE_DIR / "main.log"
 logger = logging.getLogger("archiv_tracker")
@@ -43,12 +44,12 @@ if not logger.handlers:
     logger.addHandler(file_handler)
 
 # ---------------------------------------------------------------------------
-# Configuration helper
+# Работа с конфигурацией
 # ---------------------------------------------------------------------------
 def load_config() -> Dict:
-    """Load configuration from ``config.yaml``.
+    """Загрузить конфигурацию из ``config.yaml``.
 
-    Returns an empty dict if the file does not exist.
+    Если файла нет, возвращает пустой словарь.
     """
     if not CONFIG_PATH.is_file():
         logger.warning(f"Config file not found at {CONFIG_PATH}, returning empty config.")
@@ -120,13 +121,13 @@ def token_is_exact(token: str) -> bool:
     return bool(letters) and letters.isupper() and len(letters) <= 5
 
 # ---------------------------------------------------------------------------
-# Simple HTML extractor (used by the Streamlit UI and main script)
+# Простой извлекатель текста из HTML (для валидатора и оркестратора)
 # ---------------------------------------------------------------------------
 def extract_text_from_url(url: str) -> str:
-    """Download *url* and return visible text.
+    """Загрузить *url* и вернуть видимый текст страницы.
 
-    The extractor removes ``script``, ``style`` and ``noscript`` tags and joins the
-    remaining strings. It returns an empty string on failure.
+    Удаляет теги ``script``, ``style`` и ``noscript`` и склеивает оставшиеся
+    строки. При ошибке возвращает пустую строку.
     """
     try:
         resp = requests.get(url, timeout=15)
@@ -140,15 +141,14 @@ def extract_text_from_url(url: str) -> str:
         return ""
 
 # ---------------------------------------------------------------------------
-# History handling (stores processed identifiers to avoid repeats)
+# История (хранит обработанные идентификаторы, чтобы не было повторов)
 # ---------------------------------------------------------------------------
 def _ensure_history_file():
     if not HISTORY_PATH.is_file():
         HISTORY_PATH.write_text(json.dumps([]), encoding="utf-8")
 
 def get_history() -> List[str]:
-    """Return a list of previously processed identifiers.
-    """
+    """Вернуть список ранее обработанных идентификаторов."""
     _ensure_history_file()
     try:
         with open(HISTORY_PATH, "r", encoding="utf-8") as f:
@@ -159,20 +159,19 @@ def get_history() -> List[str]:
         return []
 
 def update_history(new_ids: List[str]):
-    """Append new identifiers to the history file, respecting ``history_size``.
-    """
+    """Дописать новые идентификаторы в файл истории с учётом ``history_size``."""
     cfg = load_config()
     max_size = cfg.get("history_size", 1000)
     history = get_history()
     history.extend(new_ids)
-    # Deduplicate while preserving order (newest at end)
+    # Убираем дубликаты, сохраняя порядок (новые – в конце)
     seen = set()
     deduped = []
     for item in history:
         if item not in seen:
             deduped.append(item)
             seen.add(item)
-    # Trim to ``max_size`` (keep most recent entries)
+    # Обрезаем до ``max_size`` (оставляем самые свежие записи)
     if len(deduped) > max_size:
         deduped = deduped[-max_size:]
     try:

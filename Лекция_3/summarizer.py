@@ -1,9 +1,9 @@
 # summarizer.py
-"""Summarizer agent.
+"""Агент-суммаризатор.
 
 ``engine="sumy"`` строит резюме алгоритмом LSA из библиотеки Sumy.
-``engine="ollama"`` запрашивает локальную модель через OpenAI-совместимый
-endpoint из секции ``llm`` в config.yaml.
+``engine="ollama"`` / ``engine="openai"`` запрашивают модель через
+OpenAI-совместимый endpoint из секций ``providers`` / ``llm`` в config.yaml.
 """
 
 import logging
@@ -11,7 +11,7 @@ import os
 
 import requests
 
-# Sumy imports – pure Python, no compiled extensions
+# Импорты Sumy – чистый Python, без компилируемых расширений
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lsa import LsaSummarizer
@@ -90,17 +90,17 @@ def _server_down(exc: requests.RequestException) -> bool:
 
 
 def _get_summarizer() -> LsaSummarizer:
-    """Create (or retrieve) a Sumy LSA summarizer instance.
+    """Создать экземпляр суммаризатора Sumy LSA.
 
-    The summarizer is lightweight, so we simply instantiate a new one each
-    call – the overhead is negligible for the modest number of articles we
-    process.
+    Объект лёгкий, поэтому создаём новый при каждом вызове – накладные
+    расходы ничтожны при нашем небольшом числе публикаций.
     """
     summarizer = LsaSummarizer()
     return summarizer
 
 
 def _summarize_lsa(text: str, max_sentences: int) -> str:
+    """Построить резюме алгоритмом LSA (английский токенизатор)."""
     parser = PlaintextParser.from_string(text, Tokenizer("english"))
     summary_sentences = _get_summarizer()(parser.document, max_sentences)
     summary = " ".join(str(sentence) for sentence in summary_sentences)
@@ -148,24 +148,24 @@ def summarize(
     engine: str = "sumy",
     llm: dict | None = None,
 ) -> str:
-    """Return a concise summary for *text*.
+    """Вернуть краткое резюме текста *text*.
 
-    Parameters
-    ----------
+    Параметры
+    ---------
     text: str
-        The full article body.
-    max_sentences: int, optional
-        Maximum number of sentences in the generated summary. Default is 3.
-    engine: str, optional
-        ``sumy`` (default), ``ollama`` or ``openai``.
-    llm: dict, optional
+        Полный текст публикации.
+    max_sentences: int, необязательный
+        Максимальное число предложений в резюме. По умолчанию 3.
+    engine: str, необязательный
+        ``sumy`` (по умолчанию), ``ollama`` или ``openai``.
+    llm: dict, необязательный
         Подключение модели. Если не задано, берётся из config.yaml.
 
-    Returns
-    -------
+    Возвращает
+    ----------
     str
-        The generated summary. If Ollama was selected and the server does not
-        answer, raises ``LlmUnavailable``.
+        Готовое резюме. Если выбрана модель, а сервер не отвечает,
+        выбрасывается ``LlmUnavailable``.
     """
     if not text:
         logger.warning("Empty text received for summarization.")
