@@ -37,7 +37,13 @@ except ImportError:
 # Local modules
 from utils import load_config, logger as base_logger, extract_text_from_url, resolve_date_range
 from scraper import get_new_items, SOURCE_NAMES
-from summarizer import summarize
+from summarizer import (
+    LlmUnavailable,
+    llm_unavailable_message,
+    normalize_engine,
+    resolve_llm,
+    summarize,
+)
 from notifier import send_email
 
 # Дочерний логгер: сообщения передаются родителю «archiv_tracker» (utils.py),
@@ -74,6 +80,8 @@ def process_items(
     save_history: bool = True,
     max_sentences: int = 3,
     text_limit: int = 2000,
+    engine: Optional[str] = None,
+    llm: Optional[Dict] = None,
     send: Optional[bool] = None,
     date_from: Optional[date] = None,
     date_to: Optional[date] = None,
@@ -96,6 +104,14 @@ def process_items(
     if sources is None:
         sources = cfg.get("sources", list(SOURCE_NAMES))
     date_from, date_to = resolve_date_range(date_from=date_from, date_to=date_to)
+    engine = normalize_engine(engine if engine is not None else cfg.get("summarizer"))
+    if engine != "sumy" and llm is None:
+        llm = resolve_llm(cfg, engine)
+    llm_notice = llm_unavailable_message(llm) if engine != "sumy" else None
+    if llm_notice:
+        logger.warning(llm_notice)
+        engine = "sumy"
+    process_items.last_llm_notice = llm_notice
     if send is None:
         send = bool(cfg.get("send_email", False))
     email_cfg = cfg.get("email", {})
@@ -107,9 +123,13 @@ def process_items(
     logger.info(f"   Темы: {', '.join(topics) or '—'}")
     logger.info(f"   Источники: {', '.join(SOURCE_NAMES.get(s, s) for s in sources) or '—'}")
     logger.info(f"   Даты: {date_from.isoformat()} — {date_to.isoformat()}")
+    if engine == "sumy":
+        backend = "Sumy"
+    else:
+        backend = (llm or {}).get("model") or engine
     logger.info(
         f"   Записей с источника: {rows}; предложений в резюме: {max_sentences}; "
-        f"лимит текста: {text_limit}; почта: {'вкл' if send else 'выкл'}"
+        f"резюме: {backend}; лимит текста: {text_limit}; почта: {'вкл' if send else 'выкл'}"
     )
 
     new_items = get_new_items(
@@ -143,7 +163,16 @@ def process_items(
             results.append(result)
             continue
 
-        summary = summarize(raw_text, max_sentences=max_sentences)
+        try:
+            summary = summarize(
+                raw_text, max_sentences=max_sentences, engine=engine, llm=llm,
+            )
+        except LlmUnavailable as exc:
+            if not process_items.last_llm_notice:
+                process_items.last_llm_notice = exc.message
+                logger.warning(exc.message)
+            engine = "sumy"
+            summary = summarize(raw_text, max_sentences=max_sentences, engine="sumy")
         result["summary"] = summary
         logger.info(f"   ✍️ Резюме готово: {len(summary)} символов")
         if send:

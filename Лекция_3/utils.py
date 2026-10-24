@@ -57,6 +57,24 @@ def load_config() -> Dict:
         return yaml.safe_load(f) or {}
 
 
+def save_model_settings(engine: str, providers: Dict) -> None:
+    """Записать активного провайдера и блоки ``llm`` / ``providers`` в config.yaml."""
+    active = providers.get(engine) or providers.get("ollama") or {}
+    public_llm = {key: value for key, value in active.items() if value}
+    block = "# Чем строить резюме: sumy, ollama или openai.\n" + yaml.safe_dump(
+        {"summarizer": engine, "llm": public_llm, "providers": providers},
+        allow_unicode=True,
+        sort_keys=False,
+    )
+    text = CONFIG_PATH.read_text(encoding="utf-8") if CONFIG_PATH.is_file() else ""
+    pattern = re.compile(r"(?ms)^# Чем строить резюме:.*?(?=^# How often to check|\Z)")
+    if pattern.search(text):
+        text = pattern.sub(block + "\n", text, count=1)
+    else:
+        text = text.rstrip() + "\n\n" + block
+    CONFIG_PATH.write_text(text, encoding="utf-8")
+
+
 def _subtract_months(day: date, months: int) -> date:
     """Сдвинуть дату на ``months`` назад, ограничив день длиной целевого месяца."""
     month = day.month - months

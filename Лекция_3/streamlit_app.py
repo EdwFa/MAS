@@ -2,7 +2,7 @@
 """Streamlit-интерфейс мульти-агентного трекера публикаций archive.org.
 
 Возможности:
-- Все настройки запуска находятся в боковой панели.
+- Настройки запуска находятся в боковой панели, провайдеры модели — на отдельной вкладке.
 - Кнопка ручного запуска одного цикла обработки (поиск → извлечение текста → резюме).
 - Найденные публикации и их резюме выводятся прямо в интерфейс.
 - Схема агентов открывается на отдельной вкладке.
@@ -18,8 +18,86 @@ import streamlit.components.v1 as components
 
 # Импорт основной функции обработки из main.py (файлы лежат в одной папке).
 from main import process_items
+from summarizer import llm_unavailable_message
 from scraper import SOURCE_NAMES
-from utils import load_config, HISTORY_PATH, get_history, resolve_date_range
+from utils import HISTORY_PATH, get_history, load_config, resolve_date_range, save_model_settings
+
+PROVIDER_LABELS = {
+    "sumy": "Sumy",
+    "ollama": "Ollama",
+    "openai": "OpenAI-совместимый",
+}
+PROVIDER_DEFAULTS = {
+    "ollama": {
+        "base_url": "http://localhost:11434/v1",
+        "model": "qwen2.5:7b",
+        "api_key_env": "",
+    },
+    "openai": {
+        "base_url": "https://api.openai.com/v1",
+        "model": "gpt-4o-mini",
+        "api_key_env": "OPENAI_API_KEY",
+    },
+}
+
+
+def _drafts_from_config(cfg: dict) -> dict:
+    stored = cfg.get("providers") or {}
+    llm = cfg.get("llm") or {}
+    active = str(cfg.get("summarizer", "sumy")).strip().lower()
+    drafts = {}
+    for name, defaults in PROVIDER_DEFAULTS.items():
+        draft = dict(defaults)
+        saved = stored.get(name)
+        source = saved if isinstance(saved, dict) and saved else (llm if active == name else {})
+        for key in ("base_url", "model", "api_key_env"):
+            if source.get(key):
+                draft[key] = source[key]
+        drafts[name] = draft
+    return drafts
+
+
+def _field(name: str, field: str) -> str:
+    key = f"{field}_{name}"
+    if key in st.session_state:
+        return str(st.session_state[key] or "")
+    return str(st.session_state["provider_drafts"][name].get(field) or "")
+
+
+def _active_llm() -> dict:
+    name = st.session_state["provider"]
+    if name == "sumy":
+        return {}
+    data = {
+        "base_url": _field(name, "base_url").strip(),
+        "model": _field(name, "model").strip(),
+        "api_key_env": _field(name, "api_key_env").strip(),
+    }
+    secret = _field(name, "api_key").strip()
+    if secret:
+        data["api_key"] = secret
+    return data
+
+
+def _collect_providers() -> dict:
+    providers = {}
+    for name in PROVIDER_DEFAULTS:
+        entry = {
+            "base_url": _field(name, "base_url").strip(),
+            "model": _field(name, "model").strip(),
+        }
+        env_name = _field(name, "api_key_env").strip()
+        if env_name:
+            entry["api_key_env"] = env_name
+        providers[name] = entry
+    return providers
+
+
+def _provider_input(label: str, name: str, field: str, **kwargs):
+    key = f"{field}_{name}"
+    if key not in st.session_state:
+        st.session_state[key] = st.session_state["provider_drafts"][name].get(field) or ""
+    st.text_input(label, key=key, **kwargs)
 
 st.set_page_config(
     page_title="Трекер публикаций",
@@ -28,6 +106,14 @@ st.set_page_config(
 )
 
 cfg = load_config()
+if "provider_drafts" not in st.session_state:
+    st.session_state["provider_drafts"] = _drafts_from_config(cfg)
+    for name in PROVIDER_DEFAULTS:
+        for field in ("base_url", "model", "api_key_env", "api_key"):
+            st.session_state.pop(f"{field}_{name}", None)
+if "provider" not in st.session_state:
+    saved_provider = str(cfg.get("summarizer", "sumy")).strip().lower()
+    st.session_state["provider"] = saved_provider if saved_provider in PROVIDER_LABELS else "sumy"
 
 # ---------------------------------------------------------------------------
 # Боковая панель: настройки
@@ -93,7 +179,25 @@ with st.sidebar:
     )
 
     st.subheader("Резюме")
-    max_sentences = st.slider("Предложений в резюме", 1, 10, 3)
+    engine = st.session_state["provider"]
+    if engine == "sumy":
+        provider_caption = "Провайдер: Sumy"
+    else:
+        provider_caption = (
+            f"Провайдер: {PROVIDER_LABELS[engine]} · {_field(engine, 'model') or '—'}"
+        )
+    st.caption(f"{provider_caption}. Меняется на вкладке «Провайдеры».")
+    max_sentences = st.slider(
+        "Предложений в резюме",
+        1,
+        10,
+        3,
+        help=(
+            "Сколько предложений вырезать из текста."
+            if engine == "sumy"
+            else "Лимит предложений в инструкции для модели."
+        ),
+    )
     text_limit = st.slider(
         "Лимит текста страницы (символов)",
         min_value=500, max_value=10000, value=2000, step=500,
@@ -150,7 +254,9 @@ st.caption(
     "🧪 Тестовый режим: письма не отправляются."
 )
 
-tab_search, tab_diagram = st.tabs(["🔎 Поиск", "🗺 Схема агентов"])
+tab_search, tab_providers, tab_diagram = st.tabs(
+    ["🔎 Поиск", "🤖 Провайдеры", "🗺 Схема агентов"]
+)
 
 with tab_search:
     run = st.button(
@@ -168,6 +274,7 @@ with tab_search:
     if run:
         with st.spinner("Агенты работают: ищем публикации и составляем резюме…"):
             try:
+                st.session_state["llm_notice"] = None
                 st.session_state["results"] = process_items(
                     topics=topics,
                     sources=sources,
@@ -176,17 +283,22 @@ with tab_search:
                     save_history=save_history,
                     max_sentences=max_sentences,
                     text_limit=text_limit,
+                    engine=engine,
+                    llm=_active_llm() or None,
                     date_from=date_from,
                     date_to=date_to,
                     send=False,  # пока только вывод в интерфейс
                 )
                 st.session_state["run_error"] = None
+                st.session_state["llm_notice"] = process_items.last_llm_notice
             except Exception as e:
                 st.session_state["results"] = []
                 st.session_state["run_error"] = str(e)
 
     if st.session_state.get("run_error"):
         st.error(f"Ошибка при обработке: {st.session_state['run_error']}")
+    if st.session_state.get("llm_notice"):
+        st.warning(st.session_state["llm_notice"])
 
     results = st.session_state.get("results")
     if results is not None and not st.session_state.get("run_error"):
@@ -254,6 +366,59 @@ with tab_search:
                 st.warning(f"Не удалось прочитать файл журнала: {exc}")
         else:
             st.caption("Файл журнала не найден — записи выводятся в терминал, где запущен Streamlit.")
+
+with tab_providers:
+    st.header("Провайдеры модели")
+    st.caption(
+        "Выбранный провайдер строит резюме в этом сеансе сразу. "
+        "Планировщик читает config.yaml после сохранения."
+    )
+    st.radio(
+        "Активный провайдер",
+        options=list(PROVIDER_LABELS),
+        format_func=lambda key: PROVIDER_LABELS[key],
+        horizontal=True,
+        key="provider",
+    )
+    current = st.session_state["provider"]
+    if current == "sumy":
+        st.info(
+            "Sumy строит резюме алгоритмом LSA на этой машине и не вызывает языковую модель."
+        )
+    else:
+        _provider_input("Адрес API", current, "base_url")
+        _provider_input("Модель", current, "model")
+        _provider_input(
+            "Переменная окружения с ключом",
+            current,
+            "api_key_env",
+            help="Для Ollama поле можно оставить пустым. Сам ключ в файл не записывается.",
+        )
+        _provider_input(
+            "Ключ для этого сеанса",
+            current,
+            "api_key",
+            type="password",
+            help="Попадает только в текущий процесс. В config.yaml записывается имя переменной.",
+        )
+        if st.button("Проверить подключение", key="check_provider"):
+            notice = llm_unavailable_message(_active_llm(), with_fallback=False)
+            model_name = st.session_state.get(f"model_{current}", "")
+            st.session_state["provider_check"] = notice or f"Сервер отвечает. Модель: {model_name}."
+            st.session_state["provider_check_ok"] = notice is None
+            st.session_state["provider_check_for"] = current
+        if (
+            st.session_state.get("provider_check_for") == current
+            and st.session_state.get("provider_check")
+        ):
+            if st.session_state.get("provider_check_ok"):
+                st.success(st.session_state["provider_check"])
+            else:
+                st.warning(st.session_state["provider_check"])
+
+    if st.button("Сохранить в config.yaml", type="primary", key="save_providers"):
+        save_model_settings(st.session_state["provider"], _collect_providers())
+        st.success("Провайдеры сохранены в config.yaml.")
 
 with tab_diagram:
     diagram_path = Path(__file__).parent / "diagr" / "agents.html"

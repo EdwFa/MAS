@@ -10,6 +10,20 @@ sources:
   - "archive"
   - "arxiv"
 
+# Чем строить резюме: sumy, ollama или openai.
+summarizer: sumy
+llm:
+  base_url: http://localhost:11434/v1
+  model: qwen2.5:7b
+providers:
+  ollama:
+    base_url: http://localhost:11434/v1
+    model: qwen2.5:7b
+  openai:
+    base_url: https://api.openai.com/v1
+    model: gpt-4o-mini
+    api_key_env: OPENAI_API_KEY
+
 # How often to check for new publications (in seconds)
 check_interval_seconds: 3600  # every hour
 
