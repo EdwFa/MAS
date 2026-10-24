@@ -1,0 +1,185 @@
+# main.py
+"""Entry point for the Multi‑Agent Publication Tracker.
+
+It schedules the Scraper to run at a configurable interval, then for each new
+item it:
+  1. Downloads the page (or PDF if available – simplified to HTML here).
+  2. Extracts raw text using BeautifulSoup.
+  3. Summarizes the text with the summarizer agent.
+  4. Sends the summary via email using the notifier agent.
+
+The scheduler uses ``APScheduler`` with a background thread, so the script can be
+run directly (`python main.py`).
+"""
+
+import logging
+import sys
+import time
+from datetime import date
+from typing import List, Dict, Optional
+import requests
+from bs4 import BeautifulSoup
+# Попытка импортировать APScheduler; если не установлен, используем простой fallback
+try:
+    from apscheduler.schedulers.background import BackgroundScheduler
+except ImportError:
+    # Минимальная заглушка, имитирующая API Scheduler
+    class _DummyScheduler:
+        def add_job(self, func, trigger, **kwargs):
+            # При вызове сразу исполняем функцию (один раз)
+            func()
+        def start(self):
+            pass
+        def shutdown(self):
+            pass
+    BackgroundScheduler = _DummyScheduler
+
+# Local modules
+from utils import load_config, logger as base_logger, extract_text_from_url, resolve_date_range
+from scraper import get_new_items, SOURCE_NAMES
+from summarizer import summarize
+from notifier import send_email
+
+# Дочерний логгер: сообщения передаются родителю «archiv_tracker» (utils.py),
+# у которого настроены вывод в терминал и в main.log – свои обработчики не нужны.
+logger = logging.getLogger("archiv_tracker.main")
+
+
+def extract_text_from_url(url: str) -> str:
+    """Download *url* and return visible text.
+
+    This is a very simple extractor – it removes script/style tags and joins the
+    remaining text fragments. For PDFs you would need a different extractor, but
+    archiv.org usually provides an HTML details page which contains enough
+    information for a short summary.
+    """
+    try:
+        resp = requests.get(url, timeout=15)
+        resp.raise_for_status()
+        soup = BeautifulSoup(resp.text, "html.parser")
+        for tag in soup(["script", "style", "noscript"]):
+            tag.decompose()
+        text = " ".join(soup.stripped_strings)
+        return text
+    except Exception as e:
+        logger.error(f"Failed to extract text from {url}: {e}")
+        return ""
+
+
+def process_items(
+    topics: Optional[List[str]] = None,
+    sources: Optional[List[str]] = None,
+    rows: int = 20,
+    skip_seen: bool = True,
+    save_history: bool = True,
+    max_sentences: int = 3,
+    text_limit: int = 2000,
+    send: Optional[bool] = None,
+    date_from: Optional[date] = None,
+    date_to: Optional[date] = None,
+) -> List[Dict]:
+    """Core job – called by the scheduler and by the Streamlit UI.
+
+    1. Get new items from the enabled source agents (archive.org, arXiv …).
+    2. For each item take its abstract (or page text) and summarise it.
+    3. Optionally send the summary by email.
+
+    ``send=None`` means "take the value of ``send_email`` from config.yaml"
+    (default ``False`` – письма не отправляются, пока это явно не включено).
+
+    Returns a list of dicts: source, identifier, title, url, summary, status …
+    """
+    t0 = time.time()
+    cfg = load_config()
+    if topics is None:
+        topics = cfg.get("topics", [])
+    if sources is None:
+        sources = cfg.get("sources", list(SOURCE_NAMES))
+    date_from, date_to = resolve_date_range(date_from=date_from, date_to=date_to)
+    if send is None:
+        send = bool(cfg.get("send_email", False))
+    email_cfg = cfg.get("email", {})
+    if send and not email_cfg:
+        logger.error("Настройки почты не заданы – письма отправляться не будут.")
+        send = False
+
+    logger.info("▶️ Запуск цикла обработки")
+    logger.info(f"   Темы: {', '.join(topics) or '—'}")
+    logger.info(f"   Источники: {', '.join(SOURCE_NAMES.get(s, s) for s in sources) or '—'}")
+    logger.info(f"   Даты: {date_from.isoformat()} — {date_to.isoformat()}")
+    logger.info(
+        f"   Записей с источника: {rows}; предложений в резюме: {max_sentences}; "
+        f"лимит текста: {text_limit}; почта: {'вкл' if send else 'выкл'}"
+    )
+
+    new_items = get_new_items(
+        topics=topics, sources=sources, rows=rows,
+        skip_seen=skip_seen, save_history=save_history,
+        date_from=date_from, date_to=date_to,
+    )
+    results: List[Dict] = []
+    if not new_items:
+        logger.info(f"⏹ Новых публикаций нет. Цикл завершён за {time.time() - t0:.1f} с")
+        return results
+
+    logger.info(f"━━━━━━━━ Суммаризация: {len(new_items)} публикаций ━━━━━━━━")
+    for n, item in enumerate(new_items, start=1):
+        src = SOURCE_NAMES.get(item.get("source"), item.get("source", "?"))
+        logger.info(f"📄 [{n}/{len(new_items)}] ({src}) {item['title'][:100]}")
+        result = dict(item, summary="", status="")
+
+        abstract = item.get("abstract") or ""
+        if len(abstract) >= 200:
+            raw_text = abstract[:text_limit]
+            logger.info(f"   Текст: аннотация из метаданных, {len(raw_text)} символов")
+        else:
+            t1 = time.time()
+            logger.info(f"   Загрузка страницы {item['url']} …")
+            raw_text = extract_text_from_url(item["url"])[:text_limit]  # limit size for speed
+            logger.info(f"   Текст: со страницы, {len(raw_text)} символов ({time.time() - t1:.1f} с)")
+        if not raw_text:
+            logger.warning(f"   ⚠️ Текст не получен – публикация пропущена")
+            result["status"] = "Не удалось извлечь текст"
+            results.append(result)
+            continue
+
+        summary = summarize(raw_text, max_sentences=max_sentences)
+        result["summary"] = summary
+        logger.info(f"   ✍️ Резюме готово: {len(summary)} символов")
+        if send:
+            subject = f"Новая публикация ({src}): {item['title']}"
+            body = f"URL: {item['url']}\n\nРезюме:\n{summary}\n"
+            success = send_email(subject, body, email_cfg)
+            result["status"] = "Отправлено на почту" if success else "Ошибка отправки"
+            logger.info(f"   ✉️ {result['status']}")
+        else:
+            result["status"] = "Не отправлялось (тестовый режим)"
+            logger.info("   ✉️ Почта выключена – письмо не отправлялось")
+        results.append(result)
+
+    logger.info(
+        f"⏹ Цикл завершён за {time.time() - t0:.1f} с: обработано {len(results)}, "
+        f"с резюме {sum(1 for r in results if r['summary'])}"
+    )
+    return results
+
+
+def main():
+    cfg = load_config()
+    interval = cfg.get("check_interval_seconds", 3600)
+    scheduler = BackgroundScheduler()
+    # Если используется dummy‑scheduler, add_job сразу выполнит задачу один раз.
+    scheduler.add_job(process_items, "interval", seconds=interval, id="archive_check", next_run_time=None)
+    logger.info(f"Scheduler started – checking every {interval} seconds.")
+    scheduler.start()
+    # Если это реальный APScheduler, он будет работать в фоне; иначе – просто завершим процесс.
+    try:
+        import time
+        while True:
+            time.sleep(60)
+    except (KeyboardInterrupt, SystemExit):
+        logger.info("Shutting down scheduler…")
+        scheduler.shutdown()
+
+if __name__ == "__main__":
+    main()
