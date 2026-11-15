@@ -40,3 +40,4 @@
 {"id": "q40", "case": "P-0051", "as_of": "2026-11-16", "kind": "chart_fact", "question": "Какой у пациента диагноз?", "gold": ["Condition/c-90"], "expect_open_question": "диагноз предварительный, HER2 в работе"}
 {"id": "q41", "case": "P-0051", "as_of": "2026-11-16", "kind": "multi", "question": "Есть ли данные за отдалённые метастазы и чем это подтверждено?", "gold": ["DocumentReference/ct-305"]}
 {"id": "q42", "case": "P-0051", "as_of": "2026-11-16", "kind": "none", "question": "Что рекомендации говорят о лечении рака желудка?", "gold": [], "expect_not_found": true, "note": "учебные рекомендации — про рак молочной железы"}
+{"id": "q43", "case": "P-0042", "as_of": "2026-11-16", "kind": "chart_fact", "question": "Какой индекс Ki-67?", "gold": [], "expect_not_found": true, "note": "Ki-67 не выполнен (path-201): открытый вопрос, не придумывать"}

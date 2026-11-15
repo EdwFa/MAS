@@ -255,7 +255,7 @@
      "text": "Рецепторы эстрогена (ИГХ)"
     },
     "effectiveDateTime": "2026-11-10",
-    "valueString": "90% клеток, интенсивность 3"
+    "valueString": "0%"
    }
   },
   {
@@ -275,30 +275,7 @@
      "text": "Рецепторы прогестерона (ИГХ)"
     },
     "effectiveDateTime": "2026-11-10",
-    "valueString": "20% клеток, интенсивность 2"
-   }
-  },
-  {
-   "resource": {
-    "resourceType": "Observation",
-    "id": "ki67-77",
-    "status": "final",
-    "subject": {
-     "reference": "Patient/P-0042"
-    },
-    "category": [
-     {
-      "text": "pathology"
-     }
-    ],
-    "code": {
-     "text": "Ki-67"
-    },
-    "effectiveDateTime": "2026-11-10",
-    "valueQuantity": {
-     "value": 30,
-     "unit": "%"
-    }
+    "valueString": "0%"
    }
   },
   {
