@@ -284,7 +284,7 @@ def test_timeline_by_days():
     assert ("Observation", "tnm-1") in tue.res and ("DiagnosticReport", "brca-7") not in tue.res
     wed = FHIRStore(as_of="2026-11-18")
     assert wed.read("ServiceRequest", "sr-brca-7")["status"] == "completed"
-    notes = wed.events("a2a_notification")
+    notes = [n for n in wed.events("a2a_notification") if n["task_id"] == "brca-7"]
     assert len(notes) == 2 and len({n["message_id"] for n in notes}) == 1     # повтор уведомления
     assert FHIRStore().read("ServiceRequest", "sr-brca-7")["status"] == "active"
 
@@ -346,6 +346,17 @@ def test_suite_oracle_and_bad_agent(fhir, index):
     worse = run_suite(bad, tools=tools)
     assert worse["critical"] == ["q08"]
     assert not gate("bad", "good", {"good": good, "bad": worse}.get)[0]
+
+
+def test_ngs_task_outlives_the_board():
+    fri = FHIRStore(as_of="2026-11-20")
+    assert fri.read("ServiceRequest", "sr-ngs-1")["status"] == "active"           # к консилиуму результата нет
+    assert any(n["state"] == "input_required" for n in fri.events("a2a_notification"))
+    nxt = FHIRStore(as_of="2026-11-24")
+    assert nxt.read("ServiceRequest", "sr-ngs-1")["status"] == "completed"
+    done = [n for n in nxt.events("a2a_notification") if n["task_id"] == "t-81c4" and n["state"] == "completed"]
+    assert len(done) == 2 and len({n["message_id"] for n in done}) == 1
+    assert nxt.read("Observation", "ngs-1")["valueString"].startswith("p.H1047R")
 
 
 # --- расширенные рекомендации -----------------------------------------------
