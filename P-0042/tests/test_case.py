@@ -340,3 +340,23 @@ def test_suite_oracle_and_bad_agent(fhir, index):
     worse = run_suite(bad, tools=tools)
     assert worse["critical"] == ["q08"]
     assert not gate("bad", "good", {"good": good, "bad": worse}.get)[0]
+
+
+# --- расширенные рекомендации -----------------------------------------------
+
+def test_table_stays_in_one_chunk():
+    from p0042 import DATA
+    text = (DATA / "guidelines.md").read_text(encoding="utf-8")
+    chunks = chunk_guideline(text, "kr-demo", "2026", max_chars=200)     # даже при маленьком пределе
+    table = [c for c in chunks if "Препарат A" in c["text"]]
+    assert len(table) == 1 and "Препарат C" in table[0]["text"] and "(УУР B, УДД 3)" in table[0]["text"]
+
+
+def test_ungraded_point_is_flagged(index):
+    ungraded = [c["id"] for c in index.chunks if not c["graded"]]
+    assert ungraded == ["kr-demo@2026#3.6.1"]
+
+
+def test_conflicting_sources_both_found(index):
+    top = index.hybrid_search("Как часто контролировать ФВ ЛЖ на фоне анти-HER2 терапии?", top=5)
+    assert "kr-demo@2026#3.2.2" in top and "protocol-onco@2025#2.2.1" in top

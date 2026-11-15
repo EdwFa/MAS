@@ -76,7 +76,8 @@ class Toolbox:
     def search_guidelines(self, query):
         if self.rag is None:
             raise RuntimeError("индекс рекомендаций не подключён")
-        return [{"id": c["id"], "section": c["section"], "text": c["text"]} for c in self.rag.answer_context(query)]
+        return [{"id": c["id"], "section": c["section"], "graded": c["graded"], "text": c["text"]}
+                for c in self.rag.answer_context(query)]
 
     @tool("chart_write", "Записать заключение в карту. Требует подтверждения врача.",
           {"type": "object", "required": ["case_id", "text"], "additionalProperties": False,
