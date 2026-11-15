@@ -48,6 +48,9 @@ R = [
  {"resourceType": "Condition", "id": "c-04", "subject": P, "recordedDate": "2011-09-02",
   "verificationStatus": "confirmed", "code": {"coding": [{"system": "ICD-10", "code": "I10"}], "text": "Артериальная гипертензия"}},
  # хроническая болезнь почек в списке диагнозов НЕ записана — пробел, который агент должен показать
+ {"resourceType": "FamilyMemberHistory", "id": "fmh-1", "patient": P, "status": "completed", "date": "2026-11-06",
+  "relationship": {"text": "мать"},
+  "condition": [{"code": {"text": "Рак яичников"}, "onsetAge": {"value": 58, "unit": "лет"}}]},
  {"resourceType": "AllergyIntolerance", "id": "al-1", "patient": P, "recordedDate": "2019-04-11",
   "code": {"text": "Йодсодержащие рентгеноконтрастные средства"},
   "reaction": [{"description": "Крапивница после КТ с контрастом (2019)"}]},
