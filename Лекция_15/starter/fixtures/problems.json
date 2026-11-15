@@ -1,0 +1,29 @@
+{
+ "type": "problems_list",
+ "case": "P-0042",
+ "status": "ok",
+ "items": [
+  {
+   "condition": "Рак левой молочной железы, верхненаружный квадрант",
+   "status": "confirmed",
+   "source": "Condition/c-17"
+  },
+  {
+   "condition": "Сахарный диабет 2 типа",
+   "status": "confirmed",
+   "source": "Condition/c-03"
+  },
+  {
+   "condition": "Артериальная гипертензия",
+   "status": "confirmed",
+   "source": "Condition/c-04"
+  }
+ ],
+ "board_mentions": [
+  {
+   "date": "20.11",
+   "source": "Encounter/enc-31"
+  }
+ ],
+ "open": []
+}

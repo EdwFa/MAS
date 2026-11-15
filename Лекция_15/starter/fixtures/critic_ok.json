@@ -1,0 +1,16 @@
+{
+ "type": "critic_review",
+ "case": "P-0042",
+ "status": "ok",
+ "items": [
+  {
+   "check": "у каждого значения есть source",
+   "verdict": "ok"
+  },
+  {
+   "check": "две даты — спор в open_questions",
+   "verdict": "ok"
+  }
+ ],
+ "open": []
+}

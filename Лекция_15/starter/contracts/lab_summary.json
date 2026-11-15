@@ -1,0 +1,65 @@
+{
+  "$comment": "Артефакт lab_summary (лекция 15, слайд 19). Пустой список — можно, отсутствующее поле — нельзя.",
+  "type": "object",
+  "required": [
+    "type",
+    "case",
+    "status",
+    "items",
+    "open"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "const": "lab_summary"
+    },
+    "case": {
+      "type": "string",
+      "pattern": "^P-[0-9]{4}$"
+    },
+    "status": {
+      "enum": [
+        "ok",
+        "partial",
+        "failed"
+      ]
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "marker",
+          "value",
+          "source"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "marker": {
+            "enum": [
+              "HER2",
+              "ER",
+              "PR",
+              "Ki-67"
+            ]
+          },
+          "value": {
+            "type": "string",
+            "maxLength": 16
+          },
+          "source": {
+            "type": "string",
+            "pattern": "^Observation/"
+          }
+        }
+      }
+    },
+    "open": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 200
+      }
+    }
+  }
+}

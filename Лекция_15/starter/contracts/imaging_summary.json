@@ -1,0 +1,83 @@
+{
+  "$comment": "Артефакт imaging_summary (лекция 15, слайд 19). Пустой список — можно, отсутствующее поле — нельзя.",
+  "type": "object",
+  "required": [
+    "type",
+    "case",
+    "status",
+    "items",
+    "open",
+    "board_mentions"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "const": "imaging_summary"
+    },
+    "case": {
+      "type": "string",
+      "pattern": "^P-[0-9]{4}$"
+    },
+    "status": {
+      "enum": [
+        "ok",
+        "partial",
+        "failed"
+      ]
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "study",
+          "conclusion",
+          "source"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "study": {
+            "type": "string",
+            "maxLength": 60
+          },
+          "conclusion": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "source": {
+            "type": "string",
+            "pattern": "^DocumentReference/[A-Za-z0-9-]+$"
+          }
+        }
+      }
+    },
+    "open": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 200
+      }
+    },
+    "board_mentions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "date",
+          "source"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "date": {
+            "type": "string",
+            "pattern": "^[0-3][0-9]\\.[01][0-9]$"
+          },
+          "source": {
+            "type": "string",
+            "pattern": "^(Encounter|DocumentReference)/[A-Za-z0-9-]+$"
+          }
+        }
+      }
+    }
+  }
+}

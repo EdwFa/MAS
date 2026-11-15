@@ -1,0 +1,25 @@
+{
+ "type": "imaging_summary",
+ "case": "P-0042",
+ "status": "partial",
+ "items": [
+  {
+   "study": "КТ грудной клетки и брюшной полости",
+   "conclusion": "см. протокол",
+   "source": "DocumentReference/ct-219"
+  }
+ ],
+ "board_mentions": [
+  {
+   "date": "27.11",
+   "source": "DocumentReference/ct-117"
+  },
+  {
+   "date": "20.11",
+   "source": "DocumentReference/ct-219"
+  }
+ ],
+ "open": [
+  "сцинтиграфия не дочитана"
+ ]
+}

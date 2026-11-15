@@ -1,0 +1,63 @@
+{
+  "$comment": "Артефакт med_list (лекция 15, слайд 19). Пустой список — можно, отсутствующее поле — нельзя.",
+  "type": "object",
+  "required": [
+    "type",
+    "case",
+    "status",
+    "items",
+    "open"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "const": "med_list"
+    },
+    "case": {
+      "type": "string",
+      "pattern": "^P-[0-9]{4}$"
+    },
+    "status": {
+      "enum": [
+        "ok",
+        "partial",
+        "failed"
+      ]
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "drug",
+          "status",
+          "source"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "drug": {
+            "type": "string",
+            "maxLength": 60
+          },
+          "status": {
+            "enum": [
+              "active",
+              "stopped"
+            ]
+          },
+          "source": {
+            "type": "string",
+            "pattern": "^MedicationStatement/[A-Za-z0-9-]+$"
+          }
+        }
+      }
+    },
+    "open": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 200
+      }
+    }
+  }
+}

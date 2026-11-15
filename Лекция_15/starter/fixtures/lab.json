@@ -1,0 +1,25 @@
+{
+ "type": "lab_summary",
+ "case": "P-0042",
+ "status": "ok",
+ "items": [
+  {
+   "marker": "HER2",
+   "value": "3+",
+   "source": "Observation/her2-77"
+  },
+  {
+   "marker": "ER",
+   "value": "0%",
+   "source": "Observation/er-77"
+  },
+  {
+   "marker": "PR",
+   "value": "0%",
+   "source": "Observation/pr-77"
+  }
+ ],
+ "open": [
+  "Ki-67 не найден"
+ ]
+}
