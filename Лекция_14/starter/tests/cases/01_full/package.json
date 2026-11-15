@@ -1,0 +1,8 @@
+{
+ "case_id": "P-0042",
+ "diagnosis_ref": "Condition/c-17",
+ "imaging_ref": "DocumentReference/ct-219",
+ "histology_ref": "DocumentReference/path-201",
+ "board_date": "20.11",
+ "open_questions": []
+}

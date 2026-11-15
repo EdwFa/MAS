@@ -1,0 +1,10 @@
+{
+ "note": "нет поля histology_ref",
+ "verdict": "problems",
+ "must_mention": [
+  [
+   "histology_ref",
+   "гистолог"
+  ]
+ ]
+}
