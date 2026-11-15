@@ -36,14 +36,15 @@ def refs_in(obj):
     return out
 
 
-def run(question, case_id, llm, dispatch, trace, store=None, max_steps=8):
+def run(question, case_id, llm, dispatch, trace, store=None, max_steps=8, release=None):
     extra = active_instructions(store) if store is not None else ""
     messages = [{"role": "system", "content": SYSTEM.format(
                     case_id=case_id, extra=extra,
                     tools=json.dumps(dispatch.tb.specs(), ensure_ascii=False))},
                 {"role": "user", "content": question}]
     seen = set()
-    trace.event("start", case_id=case_id, question=question)
+    trace.event("start", case_id=case_id, question=question,
+                **({"release": release} if release else {}))
     for step in range(1, max_steps + 1):
         reply = llm(messages)
         messages.append({"role": "assistant", "content": reply})

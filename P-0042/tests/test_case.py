@@ -206,3 +206,43 @@ def test_harness_pauses_for_doctor_and_step_limit(fhir, index):
 def test_local_model_only():
     with pytest.raises(ValueError):
         LocalLLM(base_url="https://api.example.com/v1")
+
+
+# --- лекция 18: эксплуатация ------------------------------------------------
+
+def test_release_manifest_and_trace(fhir, index):
+    from p0042.ops import load_release
+    rel = load_release()
+    assert rel["release"] and len(rel["fingerprint"]) == 12
+    trace = Trace()
+    llm = _script({"final": {"answer": "нет данных", "sources": []}})
+    run("?", "P-0042", llm, Dispatcher(Toolbox(fhir, index)), trace, release=rel["release"])
+    assert trace.of("start")[0]["release"] == rel["release"]
+
+
+def test_gate_blocks_new_critical():
+    from p0042.ops import gate
+    base = {"supported": 0.9, "critical": ["x"], "honest_refusal": 0.8, "attack_success": 0.05, "p95_s": 20}
+    ev = {"old": base, "new": dict(base, supported=0.95, critical=["x", "y"])}
+    ok, checks = gate("new", "old", ev.get)
+    assert not ok and checks["critical"] is False
+    ev["new"] = dict(base, supported=0.95)
+    assert gate("new", "old", ev.get)[0]
+
+
+def test_silent_mode_and_daily():
+    from p0042.ops import daily, feedback, silent_compare, summarize
+    r = silent_compare({"sources": ["a", "b"]}, {"sources": ["b", "c"]})
+    assert r["doctor_only"] == ["c"] and r["agent_only"] == ["a"] and r["recall"] == 0.5
+    assert summarize([({"sources": ["a"]}, {"sources": ["a"]}),
+                      ({"sources": ["a"]}, {"sources": ["b"]})])["nothing_missed"] == 0.5
+    t = Trace()
+    t.event("start", release="2026.11.1")
+    t.event("final", status="complete", step=4)
+    t.event("final", status="needs_review", step=7)
+    feedback(t, "accepted")
+    feedback(t, "edited", "добавил ссылку на ct-117")
+    with pytest.raises(ValueError):
+        feedback(t, "maybe")
+    d = daily(t.events)
+    assert d["runs"] == 2 and d["needs_review"] == 0.5 and d["edited"] == 0.5 and d["releases"] == ["2026.11.1"]
