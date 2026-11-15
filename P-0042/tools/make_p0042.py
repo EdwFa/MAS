@@ -97,6 +97,11 @@ R = [
  {"resourceType": "ServiceRequest", "id": "sr-brca-7", "subject": P, "status": "active", "intent": "order",
   "authoredOn": "2026-11-12", "code": {"text": "Герминальные варианты BRCA1/BRCA2"},
   "performer": [{"display": "Лаборатория молекулярной генетики «Геном-Тест» (вымышленная)"}]},
+ # соматическая NGS-панель во внешней лаборатории (лекция 16): результат придёт после консилиума
+ {"resourceType": "ServiceRequest", "id": "sr-ngs-1", "subject": P, "status": "active", "intent": "order",
+  "authoredOn": "2026-11-16", "code": {"text": "NGS-панель солидных опухолей (FFPE)"},
+  "identifier": [{"system": "a2a:task", "value": "t-81c4"}],
+  "performer": [{"display": "Лаборатория молекулярной диагностики (вымышленная)"}]},
  # документы со свободным текстом
  doc("ext-090", "2026-10-28", "Выписка из другого стационара", "Выписной эпикриз"),
  doc("mmg-180", "2026-11-04", "Маммография", "Протокол исследования"),
@@ -106,6 +111,7 @@ R = [
  doc("cardio-215", "2026-11-14", "Консультация кардиолога", "Консультация", "Practitioner/dr-21"),
  doc("ct-219", "2026-11-14", "КТ грудной клетки и брюшной полости без контрастирования", "Протокол исследования"),
  doc("bone-220", "2026-11-16", "Сцинтиграфия костей скелета", "Протокол исследования"),
+ doc("cons-12", "2026-11-12", "Информированное согласие на молекулярно-генетические исследования", "Согласие"),
 ]
 
 bundle = {"resourceType": "Bundle", "type": "collection",
@@ -136,6 +142,22 @@ T = [
  {"date": "2026-11-19", "day": "чт", "kind": "request", "from": "Practitioner/dr-17",
   "text": "Пакет нужен сегодня к 16:00. Дату консилиума уточните: в направлении на КТ стоит 27.11."},
  {"date": "2026-11-20", "day": "пт", "kind": "event", "ref": "Encounter/enc-31", "text": "Консилиум по плану в МИС"},
+ # NGS-задача во внешней лаборатории живёт дольше недели (лекция 16, слайды 15 и 22)
+ {"date": "2026-11-16", "day": "пн", "kind": "a2a_send", "message_id": "P-0042/ngs/1", "task_id": "t-81c4",
+  "ref": "ServiceRequest/sr-ngs-1", "consent": "DocumentReference/cons-12"},
+ {"date": "2026-11-17", "day": "вт", "kind": "ops", "text": "Деплой: процесс агента перезапущен посреди задачи t-81c4"},
+ {"date": "2026-11-17", "day": "вт", "kind": "a2a_notification", "message_id": "m-560", "task_id": "t-81c4",
+  "state": "input_required", "text": "Укажите номер блока FFPE; нужна подпись лечащего врача"},
+ {"date": "2026-11-20", "day": "пт", "kind": "a2a_send", "message_id": "P-0042/ngs/consent", "task_id": "t-81c4",
+  "text": "Блок 26-4417/B2; подтверждено dr-17", "note": "врач ответил через три дня — пауза, не таймаут"},
+ {"date": "2026-11-24", "day": "вт", "kind": "a2a_notification", "message_id": "m-571", "task_id": "t-81c4",
+  "state": "completed", "artifact": "Observation/ngs-1"},
+ {"date": "2026-11-24", "day": "вт", "kind": "a2a_notification", "message_id": "m-571", "task_id": "t-81c4",
+  "state": "completed", "artifact": "Observation/ngs-1", "note": "повтор уведомления"},
+ {"date": "2026-11-24", "day": "вт", "kind": "resource",
+  "resource": obs("ngs-1", "NGS: PIK3CA", "2026-11-24", string="p.H1047R, VAF 0.23, tier I",
+                  note="ESR1: покрытие ниже порога. Источник: a2a:t-81c4/artifact/ngs-1", cat="pathology")},
+ {"date": "2026-11-24", "day": "вт", "kind": "update", "ref": "ServiceRequest/sr-ngs-1", "set": {"status": "completed"}},
 ]
 with open("data/timeline_P-0042.jsonl", "w", encoding="utf-8") as f:
     for e in T:

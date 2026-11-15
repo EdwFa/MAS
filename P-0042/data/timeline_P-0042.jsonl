@@ -6,3 +6,11 @@
 {"date": "2026-11-18", "day": "ср", "kind": "update", "ref": "ServiceRequest/sr-brca-7", "set": {"status": "completed"}}
 {"date": "2026-11-19", "day": "чт", "kind": "request", "from": "Practitioner/dr-17", "text": "Пакет нужен сегодня к 16:00. Дату консилиума уточните: в направлении на КТ стоит 27.11."}
 {"date": "2026-11-20", "day": "пт", "kind": "event", "ref": "Encounter/enc-31", "text": "Консилиум по плану в МИС"}
+{"date": "2026-11-16", "day": "пн", "kind": "a2a_send", "message_id": "P-0042/ngs/1", "task_id": "t-81c4", "ref": "ServiceRequest/sr-ngs-1", "consent": "DocumentReference/cons-12"}
+{"date": "2026-11-17", "day": "вт", "kind": "ops", "text": "Деплой: процесс агента перезапущен посреди задачи t-81c4"}
+{"date": "2026-11-17", "day": "вт", "kind": "a2a_notification", "message_id": "m-560", "task_id": "t-81c4", "state": "input_required", "text": "Укажите номер блока FFPE; нужна подпись лечащего врача"}
+{"date": "2026-11-20", "day": "пт", "kind": "a2a_send", "message_id": "P-0042/ngs/consent", "task_id": "t-81c4", "text": "Блок 26-4417/B2; подтверждено dr-17", "note": "врач ответил через три дня — пауза, не таймаут"}
+{"date": "2026-11-24", "day": "вт", "kind": "a2a_notification", "message_id": "m-571", "task_id": "t-81c4", "state": "completed", "artifact": "Observation/ngs-1"}
+{"date": "2026-11-24", "day": "вт", "kind": "a2a_notification", "message_id": "m-571", "task_id": "t-81c4", "state": "completed", "artifact": "Observation/ngs-1", "note": "повтор уведомления"}
+{"date": "2026-11-24", "day": "вт", "kind": "resource", "resource": {"resourceType": "Observation", "id": "ngs-1", "status": "final", "subject": {"reference": "Patient/P-0042"}, "category": [{"text": "pathology"}], "code": {"text": "NGS: PIK3CA"}, "effectiveDateTime": "2026-11-24", "valueString": "p.H1047R, VAF 0.23, tier I", "note": [{"text": "ESR1: покрытие ниже порога. Источник: a2a:t-81c4/artifact/ngs-1"}]}}
+{"date": "2026-11-24", "day": "вт", "kind": "update", "ref": "ServiceRequest/sr-ngs-1", "set": {"status": "completed"}}

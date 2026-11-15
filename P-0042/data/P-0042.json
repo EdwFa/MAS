@@ -844,6 +844,32 @@
   },
   {
    "resource": {
+    "resourceType": "ServiceRequest",
+    "id": "sr-ngs-1",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "status": "active",
+    "intent": "order",
+    "authoredOn": "2026-11-16",
+    "code": {
+     "text": "NGS-панель солидных опухолей (FFPE)"
+    },
+    "identifier": [
+     {
+      "system": "a2a:task",
+      "value": "t-81c4"
+     }
+    ],
+    "performer": [
+     {
+      "display": "Лаборатория молекулярной диагностики (вымышленная)"
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
     "resourceType": "DocumentReference",
     "id": "ext-090",
     "status": "current",
@@ -1031,6 +1057,29 @@
       "attachment": {
        "contentType": "text/markdown",
        "url": "docs/bone-220.md"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "DocumentReference",
+    "id": "cons-12",
+    "status": "current",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "date": "2026-11-12",
+    "type": {
+     "text": "Согласие"
+    },
+    "description": "Информированное согласие на молекулярно-генетические исследования",
+    "content": [
+     {
+      "attachment": {
+       "contentType": "text/markdown",
+       "url": "docs/cons-12.md"
       }
      }
     ]
