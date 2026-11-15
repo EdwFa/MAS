@@ -1,0 +1,23 @@
+{
+ "type": "med_list",
+ "case": "P-0042",
+ "status": "ok",
+ "items": [
+  {
+   "drug": "Метформин 1000 мг",
+   "status": "active",
+   "source": "MedicationStatement/med-1"
+  },
+  {
+   "drug": "Лизиноприл 10 мг",
+   "status": "active",
+   "source": "MedicationStatement/med-2"
+  },
+  {
+   "drug": "Аторвастатин 20 мг",
+   "status": "active",
+   "source": "MedicationStatement/med-3"
+  }
+ ],
+ "open": []
+}

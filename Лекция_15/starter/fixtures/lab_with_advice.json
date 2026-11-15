@@ -1,0 +1,14 @@
+{
+ "type": "lab_summary",
+ "case": "P-0042",
+ "status": "ok",
+ "items": [
+  {
+   "marker": "HER2",
+   "value": "3+",
+   "source": "Observation/her2-77"
+  }
+ ],
+ "open": [],
+ "recommendation": "начать трастузумаб"
+}

@@ -1,0 +1,66 @@
+{
+  "$comment": "Артефакт critic_review (лекция 15, слайд 19). Пустой список — можно, отсутствующее поле — нельзя.",
+  "type": "object",
+  "required": [
+    "type",
+    "case",
+    "status",
+    "items",
+    "open"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "const": "critic_review"
+    },
+    "case": {
+      "type": "string",
+      "pattern": "^P-[0-9]{4}$"
+    },
+    "status": {
+      "enum": [
+        "ok",
+        "partial",
+        "failed"
+      ]
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "check",
+          "verdict"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "check": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "verdict": {
+            "enum": [
+              "ok",
+              "remark"
+            ]
+          },
+          "remark": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "field": {
+            "type": "string",
+            "maxLength": 60
+          }
+        }
+      }
+    },
+    "open": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 200
+      }
+    }
+  }
+}
