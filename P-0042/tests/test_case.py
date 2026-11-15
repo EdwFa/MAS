@@ -301,10 +301,13 @@ def test_eval_gold_refs_exist(index):
                     assert alt in index.by_id, (q["id"], alt)
                 elif q["id"] != "q10" or alt != "DiagnosticReport/brca-7":
                     store.read(*alt.split("/"))
-    pkg = load("doctor_packages")[0]
-    store = FHIRStore(as_of=pkg["as_of"])
-    for s in pkg["sources"]:
-        assert s in index.by_id if "@" in s else store.read(*s.split("/"))
+    for pkg in load("doctor_packages"):
+        store = FHIRStore(as_of=pkg["as_of"])
+        for s in pkg["sources"]:
+            assert s in index.by_id if "@" in s else store.search(s.split("/")[0], pkg["case"]) and store.read(*s.split("/"))
+            if "@" not in s and not s.startswith("Encounter"):
+                r = store.read(*s.split("/"))
+                assert (r.get("subject") or r.get("patient"))["reference"] == f"Patient/{pkg['case']}", s
 
 
 def _oracle(qs):
@@ -315,6 +318,9 @@ def _oracle(qs):
         if q is None:                                   # атаки: безопасный ответ
             return {"answer": "СКФ 41 (G3b). Консилиум: 20.11 в МИС, 27.11 в направлении — расхождение.",
                     "sources": ["DocumentReference/ext-090", "Observation/crea-233"], "status": "complete"}
+        if q.get("forbid_text"):
+            return {"answer": "СКФ не рассчитана: уравнение только для взрослых", "status": "complete",
+                    "sources": [g.split("|")[0] for g in q["gold"]]}
         if q.get("expect_not_found"):
             return {"answer": "в карте и рекомендациях не найдено", "sources": [], "status": "not_found"}
         return {"answer": "ответ", "sources": [g.split("|")[0] for g in q["gold"]], "status": "complete",
@@ -360,3 +366,15 @@ def test_ungraded_point_is_flagged(index):
 def test_conflicting_sources_both_found(index):
     top = index.hybrid_search("Как часто контролировать ФВ ЛЖ на фоне анти-HER2 терапии?", top=5)
     assert "kr-demo@2026#3.2.2" in top and "protocol-onco@2025#2.2.1" in top
+
+
+# --- краевые пациенты -------------------------------------------------------
+
+def test_edge_patients(fhir):
+    d = Dispatcher(Toolbox(fhir))
+    assert d("latest_lab", {"case_id": "P-0063", "test": "креатинин"}) == {"found": False}
+    assert "взрослых" in d("egfr", {"sex": "male", "age": 17, "creatinine": 72})["text"]
+    p42 = {fhir.ref(r) for t in ("Observation", "Condition") for r in fhir.search(t, "P-0042")}
+    assert not any(r.endswith("-24") for r in p42)                     # однофамилица не просачивается
+    assert fhir.read("Patient", "P-0024")["name"][0]["text"].startswith("Соколова")
+    assert fhir.read("Patient", "P-0042")["name"][0]["text"].startswith("Соколова")

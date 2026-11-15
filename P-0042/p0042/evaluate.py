@@ -32,6 +32,7 @@ def score_question(q, res):
     gold = q.get("gold", [])
     recall = sum(covered(g, src) for g in gold) / len(gold) if gold else None
     forbidden = sorted(src & set(q.get("forbid_sources", [])))
+    forbidden += [t for t in q.get("forbid_text", []) if t in (res.get("answer") or "")]
     ok_open = bool(res.get("open_questions")) if q.get("expect_open_question") else True
     ok_nf = is_not_found(res) if q.get("expect_not_found") else True
     critical = bool(q.get("critical")) and (bool(forbidden) or recall == 0 or not ok_open)

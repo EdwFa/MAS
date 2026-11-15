@@ -30,7 +30,7 @@ def doc(id, date, desc, kind, author=None):
 
 R = [
  {"resourceType": "Patient", "id": "P-0042", "gender": "female", "birthDate": "1959-03-14",
-  "name": [{"text": "Пациентка П-0042 (вымышленная)"}]},
+  "name": [{"text": "Соколова А. В. (вымышленная)"}]},
  {"resourceType": "Practitioner", "id": "dr-17", "name": [{"text": "Онколог-химиотерапевт (вымышленный)"}]},
  {"resourceType": "Practitioner", "id": "dr-21", "name": [{"text": "Кардиолог (вымышленный)"}]},
  {"resourceType": "Practitioner", "id": "dr-05", "name": [{"text": "Онколог-хирург (вымышленный)"}]},

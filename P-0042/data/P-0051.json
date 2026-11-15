@@ -1,19 +1,305 @@
 {
-  "resourceType": "Bundle",
-  "type": "collection",
-  "meta": {"tag": [{"code": "synthetic", "display": "Учебные вымышленные данные. Не реальный пациент."}]},
-  "entry": [
-    {"resource": {"resourceType": "Patient", "id": "P-0051",
-      "gender": "male", "birthDate": "1971-08-02",
-      "name": [{"text": "Пациент П-0051 (вымышленный)"}]}},
-    {"resource": {"resourceType": "Condition", "id": "c-90",
-      "subject": {"reference": "Patient/P-0051"},
-      "code": {"coding": [{"system": "ICD-10", "code": "C16.2"}], "text": "Рак тела желудка"},
-      "verificationStatus": "provisional", "recordedDate": "2026-11-05"}},
-    {"resource": {"resourceType": "Observation", "id": "crea-310",
-      "subject": {"reference": "Patient/P-0051"},
-      "code": {"coding": [{"system": "LOINC", "code": "2160-0"}], "text": "Креатинин"},
-      "valueQuantity": {"value": 81, "unit": "umol/L"},
-      "effectiveDateTime": "2026-11-06"}}
+ "resourceType": "Bundle",
+ "type": "collection",
+ "meta": {
+  "tag": [
+   {
+    "code": "synthetic",
+    "display": "Учебные вымышленные данные. Не реальный пациент."
+   }
   ]
+ },
+ "entry": [
+  {
+   "resource": {
+    "resourceType": "Patient",
+    "id": "P-0051",
+    "gender": "male",
+    "birthDate": "1971-08-02",
+    "name": [
+     {
+      "text": "Орлов Д. С. (вымышленный)"
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Condition",
+    "id": "c-90",
+    "subject": {
+     "reference": "Patient/P-0051"
+    },
+    "recordedDate": "2026-11-05",
+    "verificationStatus": "provisional",
+    "code": {
+     "coding": [
+      {
+       "system": "ICD-10",
+       "code": "C16.2"
+      }
+     ],
+     "text": "Рак тела желудка"
+    },
+    "note": [
+     {
+      "text": "Эндоскопически; гистология — тубулярная аденокарцинома, ИГХ HER2 в работе"
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Condition",
+    "id": "c-91",
+    "subject": {
+     "reference": "Patient/P-0051"
+    },
+    "recordedDate": "2019-02-11",
+    "verificationStatus": "confirmed",
+    "code": {
+     "coding": [
+      {
+       "system": "ICD-10",
+       "code": "K21.0"
+      }
+     ],
+     "text": "ГЭРБ с эзофагитом"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "crea-310",
+    "status": "final",
+    "subject": {
+     "reference": "Patient/P-0051"
+    },
+    "category": [
+     {
+      "text": "laboratory"
+     }
+    ],
+    "code": {
+     "text": "Креатинин",
+     "coding": [
+      {
+       "system": "LOINC",
+       "code": "2160-0"
+      }
+     ]
+    },
+    "effectiveDateTime": "2026-11-06",
+    "valueQuantity": {
+     "value": 81,
+     "unit": "umol/L"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "hb-310",
+    "status": "final",
+    "subject": {
+     "reference": "Patient/P-0051"
+    },
+    "category": [
+     {
+      "text": "laboratory"
+     }
+    ],
+    "code": {
+     "text": "Гемоглобин",
+     "coding": [
+      {
+       "system": "LOINC",
+       "code": "718-7"
+      }
+     ]
+    },
+    "effectiveDateTime": "2026-11-06",
+    "valueQuantity": {
+     "value": 104,
+     "unit": "g/L"
+    },
+    "note": [
+     {
+      "text": "Анемия, вероятно хроническая кровопотеря"
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "height-51",
+    "status": "final",
+    "subject": {
+     "reference": "Patient/P-0051"
+    },
+    "category": [
+     {
+      "text": "vital-signs"
+     }
+    ],
+    "code": {
+     "text": "Рост",
+     "coding": [
+      {
+       "system": "LOINC",
+       "code": "8302-2"
+      }
+     ]
+    },
+    "effectiveDateTime": "2026-11-06",
+    "valueQuantity": {
+     "value": 178,
+     "unit": "cm"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "weight-51",
+    "status": "final",
+    "subject": {
+     "reference": "Patient/P-0051"
+    },
+    "category": [
+     {
+      "text": "vital-signs"
+     }
+    ],
+    "code": {
+     "text": "Масса тела",
+     "coding": [
+      {
+       "system": "LOINC",
+       "code": "29463-7"
+      }
+     ]
+    },
+    "effectiveDateTime": "2026-11-06",
+    "valueQuantity": {
+     "value": 69,
+     "unit": "kg"
+    },
+    "note": [
+     {
+      "text": "Потеря 6 кг за 3 месяца"
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "ecog-51",
+    "status": "final",
+    "subject": {
+     "reference": "Patient/P-0051"
+    },
+    "category": [
+     {
+      "text": "survey"
+     }
+    ],
+    "code": {
+     "text": "Статус ECOG"
+    },
+    "effectiveDateTime": "2026-11-06",
+    "valueInteger": 0
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "DocumentReference",
+    "id": "egd-301",
+    "status": "current",
+    "subject": {
+     "reference": "Patient/P-0051"
+    },
+    "date": "2026-11-04",
+    "type": {
+     "text": "Протокол исследования"
+    },
+    "description": "ЭГДС с биопсией",
+    "content": [
+     {
+      "attachment": {
+       "contentType": "text/markdown",
+       "url": "docs/egd-301.md"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "DocumentReference",
+    "id": "path-302",
+    "status": "current",
+    "subject": {
+     "reference": "Patient/P-0051"
+    },
+    "date": "2026-11-09",
+    "type": {
+     "text": "Протокол исследования"
+    },
+    "description": "Гистологическое исследование биопсии желудка",
+    "content": [
+     {
+      "attachment": {
+       "contentType": "text/markdown",
+       "url": "docs/path-302.md"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "DocumentReference",
+    "id": "ct-305",
+    "status": "current",
+    "subject": {
+     "reference": "Patient/P-0051"
+    },
+    "date": "2026-11-12",
+    "type": {
+     "text": "Протокол исследования"
+    },
+    "description": "КТ грудной клетки и брюшной полости с контрастированием",
+    "content": [
+     {
+      "attachment": {
+       "contentType": "text/markdown",
+       "url": "docs/ct-305.md"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Encounter",
+    "id": "enc-51",
+    "subject": {
+     "reference": "Patient/P-0051"
+    },
+    "status": "planned",
+    "type": [
+     {
+      "text": "Онкологический консилиум"
+     }
+    ],
+    "period": {
+     "start": "2026-11-20"
+    }
+   }
+  }
+ ]
 }

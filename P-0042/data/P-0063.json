@@ -1,0 +1,110 @@
+{
+ "resourceType": "Bundle",
+ "type": "collection",
+ "meta": {
+  "tag": [
+   {
+    "code": "synthetic",
+    "display": "Учебные вымышленные данные. Не реальный пациент."
+   }
+  ]
+ },
+ "entry": [
+  {
+   "resource": {
+    "resourceType": "Patient",
+    "id": "P-0063",
+    "gender": "female",
+    "birthDate": "1978-01-23",
+    "name": [
+     {
+      "text": "Лебедева Е. Н. (вымышленная)"
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Condition",
+    "id": "c-63",
+    "subject": {
+     "reference": "Patient/P-0063"
+    },
+    "recordedDate": "2026-11-11",
+    "verificationStatus": "confirmed",
+    "code": {
+     "coding": [
+      {
+       "system": "ICD-10",
+       "code": "C50.9"
+      }
+     ],
+     "text": "Рак правой молочной железы"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "her2-63",
+    "status": "final",
+    "subject": {
+     "reference": "Patient/P-0063"
+    },
+    "category": [
+     {
+      "text": "pathology"
+     }
+    ],
+    "code": {
+     "text": "HER2 (ИГХ)"
+    },
+    "effectiveDateTime": "2026-11-11",
+    "valueString": "2+",
+    "note": [
+     {
+      "text": "Рекомендовано ISH"
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "er-63",
+    "status": "final",
+    "subject": {
+     "reference": "Patient/P-0063"
+    },
+    "category": [
+     {
+      "text": "pathology"
+     }
+    ],
+    "code": {
+     "text": "Рецепторы эстрогена (ИГХ)"
+    },
+    "effectiveDateTime": "2026-11-11",
+    "valueString": "0%"
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Encounter",
+    "id": "enc-63",
+    "subject": {
+     "reference": "Patient/P-0063"
+    },
+    "status": "planned",
+    "type": [
+     {
+      "text": "Онкологический консилиум"
+     }
+    ],
+    "period": {
+     "start": "2026-11-27"
+    }
+   }
+  }
+ ]
+}

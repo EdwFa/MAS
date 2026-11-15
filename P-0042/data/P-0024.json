@@ -1,0 +1,114 @@
+{
+ "resourceType": "Bundle",
+ "type": "collection",
+ "meta": {
+  "tag": [
+   {
+    "code": "synthetic",
+    "display": "Учебные вымышленные данные. Не реальный пациент."
+   }
+  ]
+ },
+ "entry": [
+  {
+   "resource": {
+    "resourceType": "Patient",
+    "id": "P-0024",
+    "gender": "female",
+    "birthDate": "1959-04-13",
+    "name": [
+     {
+      "text": "Соколова А. Б. (вымышленная)"
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Condition",
+    "id": "c-24",
+    "subject": {
+     "reference": "Patient/P-0024"
+    },
+    "recordedDate": "2026-11-09",
+    "verificationStatus": "confirmed",
+    "code": {
+     "coding": [
+      {
+       "system": "ICD-10",
+       "code": "C50.4"
+      }
+     ],
+     "text": "Рак правой молочной железы, верхненаружный квадрант"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "her2-24",
+    "status": "final",
+    "subject": {
+     "reference": "Patient/P-0024"
+    },
+    "category": [
+     {
+      "text": "pathology"
+     }
+    ],
+    "code": {
+     "text": "HER2 (ИГХ)"
+    },
+    "effectiveDateTime": "2026-11-09",
+    "valueString": "0"
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "crea-24",
+    "status": "final",
+    "subject": {
+     "reference": "Patient/P-0024"
+    },
+    "category": [
+     {
+      "text": "laboratory"
+     }
+    ],
+    "code": {
+     "text": "Креатинин",
+     "coding": [
+      {
+       "system": "LOINC",
+       "code": "2160-0"
+      }
+     ]
+    },
+    "effectiveDateTime": "2026-11-13",
+    "valueQuantity": {
+     "value": 64,
+     "unit": "umol/L"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Encounter",
+    "id": "enc-24",
+    "subject": {
+     "reference": "Patient/P-0024"
+    },
+    "status": "planned",
+    "type": [
+     {
+      "text": "Онкологический консилиум"
+     }
+    ],
+    "period": {
+     "start": "2026-11-20"
+    }
+   }
+  }
+ ]
+}

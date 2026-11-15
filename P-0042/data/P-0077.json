@@ -1,0 +1,94 @@
+{
+ "resourceType": "Bundle",
+ "type": "collection",
+ "meta": {
+  "tag": [
+   {
+    "code": "synthetic",
+    "display": "Учебные вымышленные данные. Не реальный пациент."
+   }
+  ]
+ },
+ "entry": [
+  {
+   "resource": {
+    "resourceType": "Patient",
+    "id": "P-0077",
+    "gender": "male",
+    "birthDate": "2009-05-02",
+    "name": [
+     {
+      "text": "Кузнецов И. А. (вымышленный)"
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Condition",
+    "id": "c-77",
+    "subject": {
+     "reference": "Patient/P-0077"
+    },
+    "recordedDate": "2026-11-10",
+    "verificationStatus": "confirmed",
+    "code": {
+     "coding": [
+      {
+       "system": "ICD-10",
+       "code": "C81.1"
+      }
+     ],
+     "text": "Лимфома Ходжкина, нодулярный склероз"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "crea-77",
+    "status": "final",
+    "subject": {
+     "reference": "Patient/P-0077"
+    },
+    "category": [
+     {
+      "text": "laboratory"
+     }
+    ],
+    "code": {
+     "text": "Креатинин",
+     "coding": [
+      {
+       "system": "LOINC",
+       "code": "2160-0"
+      }
+     ]
+    },
+    "effectiveDateTime": "2026-11-10",
+    "valueQuantity": {
+     "value": 72,
+     "unit": "umol/L"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Encounter",
+    "id": "enc-77",
+    "subject": {
+     "reference": "Patient/P-0077"
+    },
+    "status": "planned",
+    "type": [
+     {
+      "text": "Онкологический консилиум"
+     }
+    ],
+    "period": {
+     "start": "2026-11-24"
+    }
+   }
+  }
+ ]
+}
