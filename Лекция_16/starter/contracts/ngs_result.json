@@ -1,0 +1,79 @@
+{
+  "$comment": "Артефакт лаборатории после проверки нашей схемой (лекция 16, слайд 14).",
+  "type": "object",
+  "required": [
+    "type",
+    "case",
+    "status",
+    "items",
+    "open"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "const": "ngs_result"
+    },
+    "case": {
+      "type": "string",
+      "pattern": "^PSN-[0-9a-f]{4}$"
+    },
+    "status": {
+      "enum": [
+        "ok",
+        "partial",
+        "failed"
+      ]
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "gene",
+          "variant",
+          "vaf",
+          "tier",
+          "source"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "gene": {
+            "type": "string",
+            "pattern": "^[A-Z0-9]{2,10}$"
+          },
+          "variant": {
+            "type": "string",
+            "maxLength": 24
+          },
+          "vaf": {
+            "type": "string",
+            "pattern": "^0\\.[0-9]{1,3}$"
+          },
+          "tier": {
+            "enum": [
+              "I",
+              "II",
+              "III",
+              "IV"
+            ]
+          },
+          "source": {
+            "type": "string",
+            "pattern": "^a2a:t-[0-9a-f]+/artifact/[A-Za-z0-9-]+$"
+          }
+        }
+      }
+    },
+    "open": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 200
+      }
+    },
+    "report": {
+      "type": "string",
+      "pattern": "^a2a:t-[0-9a-f]+/artifact/[A-Za-z0-9-]+$"
+    }
+  }
+}

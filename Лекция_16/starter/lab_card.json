@@ -1,0 +1,13 @@
+{
+  "name": "Лаборатория молекулярной диагностики",
+  "description": "NGS-панели солидных опухолей, FFPE",
+  "version": "2.3.0",
+  "provider": {"organization": "Учебная лаборатория", "url": "https://lab.example"},
+  "supportedInterfaces": [
+    {"protocolBinding": "HTTP+JSON", "protocolVersion": "1.0", "url": "https://lab.example/a2a/rest"}],
+  "capabilities": {"streaming": false, "pushNotifications": true},
+  "defaultInputModes": ["application/json"],
+  "defaultOutputModes": ["application/json", "application/pdf"],
+  "skills": [{"id": "ngs-solid-panel", "name": "NGS-панель",
+              "description": "срок 5–10 рабочих дней", "tags": ["ngs", "oncology"]}]
+}
