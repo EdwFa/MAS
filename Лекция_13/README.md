@@ -1,6 +1,6 @@
 # Практикум 13 · Harness агента
 
-Лекция 13. Harness агента. Задание — [слайд на сайте курса](https://edwfa.github.io/mas-lecture/lecture/13/slide-37.html).
+Лекция 13. Harness агента. Задание — [слайд на сайте курса](https://edwfa.github.io/mas-lecture/lecture/13/slide-39.html).
 
 Около 150 строк Python. Модель — любая доступная. Данные — учебный случай P-0042.
 
