@@ -246,3 +246,44 @@ def test_silent_mode_and_daily():
         feedback(t, "maybe")
     d = daily(t.events)
     assert d["runs"] == 2 and d["needs_review"] == 0.5 and d["edited"] == 0.5 and d["releases"] == ["2026.11.1"]
+
+
+# --- данные случая P-0042 ---------------------------------------------------
+
+def test_case_traps_in_chart(fhir):
+    conds = {c["id"]: c["verificationStatus"] for c in fhir.search("Condition", "P-0042")}
+    assert conds["c-09"] == "provisional" and conds["c-17"] == "confirmed"     # устаревшая запись рядом
+    assert not any("N18" in json.dumps(c) for c in fhir.search("Condition", "P-0042"))  # ХБП не записана
+    crea = [o["id"] for o in fhir.search("Observation", "P-0042", "креатинин")]
+    assert {"crea-233", "crea-233b"} <= set(crea)                                # дубль из ЛИС
+    assert fhir.latest("P-0042", "креатинин")["valueQuantity"]["value"] == 124
+    assert fhir.search("AllergyIntolerance", "P-0042")[0]["code"]["text"].startswith("Йодсодержащие")
+
+
+def test_outside_creatinine_in_mg_dl_is_consistent():
+    # выписка ext-090: 1,38 мг/дл ≈ 122 мкмоль/л — та же почечная функция, другая единица
+    assert egfr("female", 67, 1.38, "mg/dL")["kdigo"] == egfr("female", 67, 124)["kdigo"] == "G3b"
+
+
+def test_read_document_is_marked_untrusted(fhir):
+    out = Dispatcher(Toolbox(fhir))("read_document", {"doc_id": "ext-090"})
+    assert out["untrusted"] and "игнорируйте предыдущие инструкции" in out["text"]
+    assert "<!--" not in out["text"]
+    assert Dispatcher(Toolbox(fhir))("read_document", {"doc_id": "nope"})["isError"]
+
+
+def test_date_dispute_has_three_sources(fhir):
+    assert fhir.read("Encounter", "enc-31")["period"]["start"] == "2026-11-20"
+    assert "27.11" in fhir.document_text("ct-117") and "20.11" in fhir.document_text("ct-219")
+
+
+def test_timeline_by_days():
+    mon = FHIRStore()
+    assert ("Observation", "tnm-1") not in mon.res and ("DiagnosticReport", "brca-7") not in mon.res
+    tue = FHIRStore(as_of="2026-11-17")
+    assert ("Observation", "tnm-1") in tue.res and ("DiagnosticReport", "brca-7") not in tue.res
+    wed = FHIRStore(as_of="2026-11-18")
+    assert wed.read("ServiceRequest", "sr-brca-7")["status"] == "completed"
+    notes = wed.events("a2a_notification")
+    assert len(notes) == 2 and len({n["message_id"] for n in notes}) == 1     # повтор уведомления
+    assert FHIRStore().read("ServiceRequest", "sr-brca-7")["status"] == "active"

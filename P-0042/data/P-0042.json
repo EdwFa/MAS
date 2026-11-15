@@ -1,37 +1,1038 @@
 {
-  "resourceType": "Bundle",
-  "type": "collection",
-  "meta": {"tag": [{"code": "synthetic", "display": "Учебные вымышленные данные. Не реальный пациент."}]},
-  "entry": [
-    {"resource": {"resourceType": "Patient", "id": "P-0042",
-      "gender": "female", "birthDate": "1959-03-14",
-      "name": [{"text": "Пациентка П-0042 (вымышленная)"}]}},
-    {"resource": {"resourceType": "Condition", "id": "c-17",
-      "subject": {"reference": "Patient/P-0042"},
-      "code": {"coding": [{"system": "ICD-10", "code": "C50.4"}], "text": "Рак молочной железы, верхненаружный квадрант"},
-      "verificationStatus": "confirmed", "recordedDate": "2026-11-12",
-      "note": [{"text": "Диагноз уточнён по гистологии 12.11"}]}},
-    {"resource": {"resourceType": "Observation", "id": "her2-77",
-      "subject": {"reference": "Patient/P-0042"},
-      "code": {"text": "HER2 (ИГХ)"}, "valueString": "3+",
-      "effectiveDateTime": "2026-11-10"}},
-    {"resource": {"resourceType": "Observation", "id": "crea-201",
-      "subject": {"reference": "Patient/P-0042"},
-      "code": {"coding": [{"system": "LOINC", "code": "2160-0"}], "text": "Креатинин"},
-      "valueQuantity": {"value": 118, "unit": "umol/L"},
-      "effectiveDateTime": "2026-11-03"}},
-    {"resource": {"resourceType": "Observation", "id": "crea-233",
-      "subject": {"reference": "Patient/P-0042"},
-      "code": {"coding": [{"system": "LOINC", "code": "2160-0"}], "text": "Креатинин"},
-      "valueQuantity": {"value": 124, "unit": "umol/L"},
-      "effectiveDateTime": "2026-11-13"}},
-    {"resource": {"resourceType": "Encounter", "id": "enc-31",
-      "subject": {"reference": "Patient/P-0042"},
-      "type": [{"text": "Онкологический консилиум"}], "status": "planned",
-      "period": {"start": "2026-11-20"}}},
-    {"resource": {"resourceType": "DocumentReference", "id": "ct-117",
-      "subject": {"reference": "Patient/P-0042"},
-      "description": "Направление на КТ. В тексте: «консилиум 27.11»",
-      "date": "2026-11-11"}}
+ "resourceType": "Bundle",
+ "type": "collection",
+ "meta": {
+  "tag": [
+   {
+    "code": "synthetic",
+    "display": "Учебные вымышленные данные. Не реальный пациент."
+   }
   ]
+ },
+ "entry": [
+  {
+   "resource": {
+    "resourceType": "Patient",
+    "id": "P-0042",
+    "gender": "female",
+    "birthDate": "1959-03-14",
+    "name": [
+     {
+      "text": "Пациентка П-0042 (вымышленная)"
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Practitioner",
+    "id": "dr-17",
+    "name": [
+     {
+      "text": "Онколог-химиотерапевт (вымышленный)"
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Practitioner",
+    "id": "dr-21",
+    "name": [
+     {
+      "text": "Кардиолог (вымышленный)"
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Practitioner",
+    "id": "dr-05",
+    "name": [
+     {
+      "text": "Онколог-хирург (вымышленный)"
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Condition",
+    "id": "c-09",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "recordedDate": "2026-11-05",
+    "verificationStatus": "provisional",
+    "code": {
+     "text": "Образование левой молочной железы, под вопросом"
+    },
+    "note": [
+     {
+      "text": "До гистологии. Заменено записью c-17"
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Condition",
+    "id": "c-17",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "recordedDate": "2026-11-12",
+    "verificationStatus": "confirmed",
+    "code": {
+     "coding": [
+      {
+       "system": "ICD-10",
+       "code": "C50.4"
+      }
+     ],
+     "text": "Рак левой молочной железы, верхненаружный квадрант"
+    },
+    "note": [
+     {
+      "text": "Диагноз уточнён по гистологии 12.11"
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Condition",
+    "id": "c-03",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "recordedDate": "2014-05-20",
+    "verificationStatus": "confirmed",
+    "code": {
+     "coding": [
+      {
+       "system": "ICD-10",
+       "code": "E11.9"
+      }
+     ],
+     "text": "Сахарный диабет 2 типа"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Condition",
+    "id": "c-04",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "recordedDate": "2011-09-02",
+    "verificationStatus": "confirmed",
+    "code": {
+     "coding": [
+      {
+       "system": "ICD-10",
+       "code": "I10"
+      }
+     ],
+     "text": "Артериальная гипертензия"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "AllergyIntolerance",
+    "id": "al-1",
+    "patient": {
+     "reference": "Patient/P-0042"
+    },
+    "recordedDate": "2019-04-11",
+    "code": {
+     "text": "Йодсодержащие рентгеноконтрастные средства"
+    },
+    "reaction": [
+     {
+      "description": "Крапивница после КТ с контрастом (2019)"
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "MedicationStatement",
+    "id": "med-1",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "status": "active",
+    "medication": {
+     "concept": {
+      "text": "Метформин 1000 мг"
+     }
+    },
+    "dosage": [
+     {
+      "text": "по 1 таблетке 2 раза в день"
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "MedicationStatement",
+    "id": "med-2",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "status": "active",
+    "medication": {
+     "concept": {
+      "text": "Лизиноприл 10 мг"
+     }
+    },
+    "dosage": [
+     {
+      "text": "1 раз в день"
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "MedicationStatement",
+    "id": "med-3",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "status": "active",
+    "medication": {
+     "concept": {
+      "text": "Аторвастатин 20 мг"
+     }
+    },
+    "dosage": [
+     {
+      "text": "1 раз в день вечером"
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "her2-77",
+    "status": "final",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "category": [
+     {
+      "text": "pathology"
+     }
+    ],
+    "code": {
+     "text": "HER2 (ИГХ)"
+    },
+    "effectiveDateTime": "2026-11-10",
+    "valueString": "3+"
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "er-77",
+    "status": "final",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "category": [
+     {
+      "text": "pathology"
+     }
+    ],
+    "code": {
+     "text": "Рецепторы эстрогена (ИГХ)"
+    },
+    "effectiveDateTime": "2026-11-10",
+    "valueString": "90% клеток, интенсивность 3"
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "pr-77",
+    "status": "final",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "category": [
+     {
+      "text": "pathology"
+     }
+    ],
+    "code": {
+     "text": "Рецепторы прогестерона (ИГХ)"
+    },
+    "effectiveDateTime": "2026-11-10",
+    "valueString": "20% клеток, интенсивность 2"
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "ki67-77",
+    "status": "final",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "category": [
+     {
+      "text": "pathology"
+     }
+    ],
+    "code": {
+     "text": "Ki-67"
+    },
+    "effectiveDateTime": "2026-11-10",
+    "valueQuantity": {
+     "value": 30,
+     "unit": "%"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "grade-77",
+    "status": "final",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "category": [
+     {
+      "text": "pathology"
+     }
+    ],
+    "code": {
+     "text": "Степень злокачественности"
+    },
+    "effectiveDateTime": "2026-11-10",
+    "valueString": "G2"
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "crea-201",
+    "status": "final",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "category": [
+     {
+      "text": "laboratory"
+     }
+    ],
+    "code": {
+     "text": "Креатинин",
+     "coding": [
+      {
+       "system": "LOINC",
+       "code": "2160-0"
+      }
+     ]
+    },
+    "effectiveDateTime": "2026-11-03",
+    "valueQuantity": {
+     "value": 118,
+     "unit": "umol/L"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "crea-233",
+    "status": "final",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "category": [
+     {
+      "text": "laboratory"
+     }
+    ],
+    "code": {
+     "text": "Креатинин",
+     "coding": [
+      {
+       "system": "LOINC",
+       "code": "2160-0"
+      }
+     ]
+    },
+    "effectiveDateTime": "2026-11-13",
+    "valueQuantity": {
+     "value": 124,
+     "unit": "umol/L"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "crea-233b",
+    "status": "final",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "category": [
+     {
+      "text": "laboratory"
+     }
+    ],
+    "code": {
+     "text": "Креатинин",
+     "coding": [
+      {
+       "system": "LOINC",
+       "code": "2160-0"
+      }
+     ]
+    },
+    "effectiveDateTime": "2026-11-13",
+    "valueQuantity": {
+     "value": 124,
+     "unit": "umol/L"
+    },
+    "note": [
+     {
+      "text": "Дубль: та же проба, повторно пришла из ЛИС при интеграции"
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "k-233",
+    "status": "final",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "category": [
+     {
+      "text": "laboratory"
+     }
+    ],
+    "code": {
+     "text": "Калий",
+     "coding": [
+      {
+       "system": "LOINC",
+       "code": "2823-3"
+      }
+     ]
+    },
+    "effectiveDateTime": "2026-11-13",
+    "valueQuantity": {
+     "value": 4.9,
+     "unit": "mmol/L"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "hba1c-190",
+    "status": "final",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "category": [
+     {
+      "text": "laboratory"
+     }
+    ],
+    "code": {
+     "text": "Гликированный гемоглобин HbA1c",
+     "coding": [
+      {
+       "system": "LOINC",
+       "code": "4548-4"
+      }
+     ]
+    },
+    "effectiveDateTime": "2026-11-03",
+    "valueQuantity": {
+     "value": 7.4,
+     "unit": "%"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "hb-233",
+    "status": "final",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "category": [
+     {
+      "text": "laboratory"
+     }
+    ],
+    "code": {
+     "text": "Гемоглобин",
+     "coding": [
+      {
+       "system": "LOINC",
+       "code": "718-7"
+      }
+     ]
+    },
+    "effectiveDateTime": "2026-11-13",
+    "valueQuantity": {
+     "value": 128,
+     "unit": "g/L"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "wbc-233",
+    "status": "final",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "category": [
+     {
+      "text": "laboratory"
+     }
+    ],
+    "code": {
+     "text": "Лейкоциты",
+     "coding": [
+      {
+       "system": "LOINC",
+       "code": "6690-2"
+      }
+     ]
+    },
+    "effectiveDateTime": "2026-11-13",
+    "valueQuantity": {
+     "value": 6.1,
+     "unit": "10^9/L"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "plt-233",
+    "status": "final",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "category": [
+     {
+      "text": "laboratory"
+     }
+    ],
+    "code": {
+     "text": "Тромбоциты",
+     "coding": [
+      {
+       "system": "LOINC",
+       "code": "777-3"
+      }
+     ]
+    },
+    "effectiveDateTime": "2026-11-13",
+    "valueQuantity": {
+     "value": 245,
+     "unit": "10^9/L"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "alt-233",
+    "status": "final",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "category": [
+     {
+      "text": "laboratory"
+     }
+    ],
+    "code": {
+     "text": "АЛТ",
+     "coding": [
+      {
+       "system": "LOINC",
+       "code": "1742-6"
+      }
+     ]
+    },
+    "effectiveDateTime": "2026-11-13",
+    "valueQuantity": {
+     "value": 22,
+     "unit": "U/L"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "ast-233",
+    "status": "final",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "category": [
+     {
+      "text": "laboratory"
+     }
+    ],
+    "code": {
+     "text": "АСТ",
+     "coding": [
+      {
+       "system": "LOINC",
+       "code": "1920-8"
+      }
+     ]
+    },
+    "effectiveDateTime": "2026-11-13",
+    "valueQuantity": {
+     "value": 25,
+     "unit": "U/L"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "bili-233",
+    "status": "final",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "category": [
+     {
+      "text": "laboratory"
+     }
+    ],
+    "code": {
+     "text": "Билирубин общий",
+     "coding": [
+      {
+       "system": "LOINC",
+       "code": "1975-2"
+      }
+     ]
+    },
+    "effectiveDateTime": "2026-11-13",
+    "valueQuantity": {
+     "value": 12,
+     "unit": "umol/L"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "height-1",
+    "status": "final",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "category": [
+     {
+      "text": "vital-signs"
+     }
+    ],
+    "code": {
+     "text": "Рост",
+     "coding": [
+      {
+       "system": "LOINC",
+       "code": "8302-2"
+      }
+     ]
+    },
+    "effectiveDateTime": "2026-11-03",
+    "valueQuantity": {
+     "value": 162,
+     "unit": "cm"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "weight-1",
+    "status": "final",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "category": [
+     {
+      "text": "vital-signs"
+     }
+    ],
+    "code": {
+     "text": "Масса тела",
+     "coding": [
+      {
+       "system": "LOINC",
+       "code": "29463-7"
+      }
+     ]
+    },
+    "effectiveDateTime": "2026-11-03",
+    "valueQuantity": {
+     "value": 74,
+     "unit": "kg"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "ecog-1",
+    "status": "final",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "category": [
+     {
+      "text": "survey"
+     }
+    ],
+    "code": {
+     "text": "Статус ECOG"
+    },
+    "effectiveDateTime": "2026-11-06",
+    "valueInteger": 1
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "id": "lvef-215",
+    "status": "final",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "category": [
+     {
+      "text": "imaging"
+     }
+    ],
+    "code": {
+     "text": "Фракция выброса левого желудочка (ЭхоКГ)",
+     "coding": [
+      {
+       "system": "LOINC",
+       "code": "10230-1"
+      }
+     ]
+    },
+    "effectiveDateTime": "2026-11-14",
+    "valueQuantity": {
+     "value": 58,
+     "unit": "%"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Encounter",
+    "id": "enc-12",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "status": "finished",
+    "type": [
+     {
+      "text": "Консультация онколога-хирурга"
+     }
+    ],
+    "period": {
+     "start": "2026-11-06"
+    },
+    "participant": [
+     {
+      "actor": {
+       "reference": "Practitioner/dr-05"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Encounter",
+    "id": "enc-15",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "status": "finished",
+    "type": [
+     {
+      "text": "Консультация кардиолога"
+     }
+    ],
+    "period": {
+     "start": "2026-11-14"
+    },
+    "participant": [
+     {
+      "actor": {
+       "reference": "Practitioner/dr-21"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Encounter",
+    "id": "enc-31",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "status": "planned",
+    "type": [
+     {
+      "text": "Онкологический консилиум"
+     }
+    ],
+    "period": {
+     "start": "2026-11-20"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "ServiceRequest",
+    "id": "sr-brca-7",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "status": "active",
+    "intent": "order",
+    "authoredOn": "2026-11-12",
+    "code": {
+     "text": "Герминальные варианты BRCA1/BRCA2"
+    },
+    "performer": [
+     {
+      "display": "Лаборатория молекулярной генетики «Геном-Тест» (вымышленная)"
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "DocumentReference",
+    "id": "ext-090",
+    "status": "current",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "date": "2026-10-28",
+    "type": {
+     "text": "Выписной эпикриз"
+    },
+    "description": "Выписка из другого стационара",
+    "content": [
+     {
+      "attachment": {
+       "contentType": "text/markdown",
+       "url": "docs/ext-090.md"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "DocumentReference",
+    "id": "mmg-180",
+    "status": "current",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "date": "2026-11-04",
+    "type": {
+     "text": "Протокол исследования"
+    },
+    "description": "Маммография",
+    "content": [
+     {
+      "attachment": {
+       "contentType": "text/markdown",
+       "url": "docs/mmg-180.md"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "DocumentReference",
+    "id": "us-188",
+    "status": "current",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "date": "2026-11-05",
+    "type": {
+     "text": "Протокол исследования"
+    },
+    "description": "УЗИ молочных желёз и регионарных лимфоузлов",
+    "content": [
+     {
+      "attachment": {
+       "contentType": "text/markdown",
+       "url": "docs/us-188.md"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "DocumentReference",
+    "id": "path-201",
+    "status": "current",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "date": "2026-11-10",
+    "type": {
+     "text": "Протокол исследования"
+    },
+    "description": "Гистологическое и ИГХ-исследование биопсии",
+    "content": [
+     {
+      "attachment": {
+       "contentType": "text/markdown",
+       "url": "docs/path-201.md"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "DocumentReference",
+    "id": "ct-117",
+    "status": "current",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "date": "2026-11-11",
+    "type": {
+     "text": "Направление"
+    },
+    "description": "Направление на КТ. В тексте: «консилиум 27.11»",
+    "content": [
+     {
+      "attachment": {
+       "contentType": "text/markdown",
+       "url": "docs/ct-117.md"
+      }
+     }
+    ],
+    "author": [
+     {
+      "reference": "Practitioner/dr-05"
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "DocumentReference",
+    "id": "cardio-215",
+    "status": "current",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "date": "2026-11-14",
+    "type": {
+     "text": "Консультация"
+    },
+    "description": "Консультация кардиолога",
+    "content": [
+     {
+      "attachment": {
+       "contentType": "text/markdown",
+       "url": "docs/cardio-215.md"
+      }
+     }
+    ],
+    "author": [
+     {
+      "reference": "Practitioner/dr-21"
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "DocumentReference",
+    "id": "ct-219",
+    "status": "current",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "date": "2026-11-14",
+    "type": {
+     "text": "Протокол исследования"
+    },
+    "description": "КТ грудной клетки и брюшной полости без контрастирования",
+    "content": [
+     {
+      "attachment": {
+       "contentType": "text/markdown",
+       "url": "docs/ct-219.md"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "DocumentReference",
+    "id": "bone-220",
+    "status": "current",
+    "subject": {
+     "reference": "Patient/P-0042"
+    },
+    "date": "2026-11-16",
+    "type": {
+     "text": "Протокол исследования"
+    },
+    "description": "Сцинтиграфия костей скелета",
+    "content": [
+     {
+      "attachment": {
+       "contentType": "text/markdown",
+       "url": "docs/bone-220.md"
+      }
+     }
+    ]
+   }
+  }
+ ]
 }
