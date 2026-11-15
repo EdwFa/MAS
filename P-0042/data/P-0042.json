@@ -142,6 +142,31 @@
   },
   {
    "resource": {
+    "resourceType": "FamilyMemberHistory",
+    "id": "fmh-1",
+    "patient": {
+     "reference": "Patient/P-0042"
+    },
+    "status": "completed",
+    "date": "2026-11-06",
+    "relationship": {
+     "text": "мать"
+    },
+    "condition": [
+     {
+      "code": {
+       "text": "Рак яичников"
+      },
+      "onsetAge": {
+       "value": 58,
+       "unit": "лет"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
     "resourceType": "AllergyIntolerance",
     "id": "al-1",
     "patient": {
