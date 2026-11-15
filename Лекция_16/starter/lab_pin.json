@@ -1,0 +1,9 @@
+{
+  "$comment": "Что мы закрепили о лаборатории (лекция 16, слайд 8). Карточка из сети с этим сверяется; описание карточки в окно модели не идёт.",
+  "card": "lab_card.json",
+  "url": "https://lab.example/a2a/rest",
+  "protocolBinding": "HTTP+JSON",
+  "protocolVersion": "1.0",
+  "skill": "ngs-solid-panel",
+  "push_url": "https://mas.clinic/a2a/push"
+}

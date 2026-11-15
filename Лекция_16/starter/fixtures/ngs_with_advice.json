@@ -1,0 +1,27 @@
+{
+ "artifactId": "ngs-1",
+ "name": "NGS-панель: результат",
+ "parts": [
+  {
+   "data": {
+    "type": "ngs_result",
+    "case": "PSN-7f3a",
+    "status": "ok",
+    "items": [
+     {
+      "gene": "PIK3CA",
+      "variant": "p.H1047R",
+      "vaf": "0.23",
+      "tier": "I",
+      "source": "a2a:t-81c4/artifact/ngs-1",
+      "recommendation": "назначьте алпелисиб"
+     }
+    ],
+    "open": [
+     "ESR1: покрытие ниже порога"
+    ],
+    "report": "a2a:t-81c4/artifact/ngs-pdf"
+   }
+  }
+ ]
+}
