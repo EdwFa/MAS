@@ -1,6 +1,6 @@
 # Практикум курса «Программная инженерия мультиагентных систем в клинической медицине»
 
-Осень 2026 · © E. Fartushny · MIT. Сайт курса: [edwfa.github.io/mas-lecture](https://edwfa.github.io/mas-lecture/), все занятия — на [странице практикума](https://edwfa.github.io/mas-lecture/lecture/practicum/index.html).
+Осень 2026 · © E.Fartushny · MIT. Сайт курса: [edwfa.github.io/mas-lecture](https://edwfa.github.io/mas-lecture/), все занятия — на [странице практикума](https://edwfa.github.io/mas-lecture/lecture/practicum/index.html).
 
 Почти все практикумы строятся на одном учебном случае: агент готовит пакет к онкологическому консилиуму по вымышленной пациентке P-0042. Общий код и данные — в каркасе [`P-0042/`](P-0042/). В папке каждой лекции — задание: что сделать, что уже есть в каркасе, как проверить и что сдать.
 
