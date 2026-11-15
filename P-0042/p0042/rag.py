@@ -28,7 +28,8 @@ def chunk_guideline(text, doc_id, version, max_chars=1500):
         if buf:
             title = " / ".join(titles[k] for k in sorted(titles))
             chunks.append({"text": " ".join(buf), "section": section, "title": title,
-                           "doc": doc_id, "version": version})
+                           "doc": doc_id, "version": version,
+                           "graded": any(GRADE.match(x) for x in buf)})   # пункт без УУР/УДД — видно сразу
             buf.clear()
 
     for line in filter(None, map(str.strip, text.splitlines())):
@@ -46,7 +47,8 @@ def chunk_guideline(text, doc_id, version, max_chars=1500):
             section = ""
             continue
         m = HEAD.match(line)
-        if m or sum(map(len, buf)) + len(line) > max_chars:
+        too_long = sum(map(len, buf)) + len(line) > max_chars and not line.startswith("|")  # таблицу не рвём
+        if m or too_long:
             flush()
             section = m.group(1) if m else section
         buf.append(line)
