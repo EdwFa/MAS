@@ -1,0 +1,19 @@
+{
+  "resourceType": "Bundle",
+  "type": "collection",
+  "meta": {"tag": [{"code": "synthetic", "display": "Учебные вымышленные данные. Не реальный пациент."}]},
+  "entry": [
+    {"resource": {"resourceType": "Patient", "id": "P-0051",
+      "gender": "male", "birthDate": "1971-08-02",
+      "name": [{"text": "Пациент П-0051 (вымышленный)"}]}},
+    {"resource": {"resourceType": "Condition", "id": "c-90",
+      "subject": {"reference": "Patient/P-0051"},
+      "code": {"coding": [{"system": "ICD-10", "code": "C16.2"}], "text": "Рак тела желудка"},
+      "verificationStatus": "provisional", "recordedDate": "2026-11-05"}},
+    {"resource": {"resourceType": "Observation", "id": "crea-310",
+      "subject": {"reference": "Patient/P-0051"},
+      "code": {"coding": [{"system": "LOINC", "code": "2160-0"}], "text": "Креатинин"},
+      "valueQuantity": {"value": 81, "unit": "umol/L"},
+      "effectiveDateTime": "2026-11-06"}}
+  ]
+}
