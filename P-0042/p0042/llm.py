@@ -6,7 +6,10 @@ LocalLLM — любой локальный сервер с OpenAI-совмест
 """
 import json
 import os
+import re
 import urllib.request
+
+THINK = re.compile(r"<think>.*?</think>", re.S)
 
 
 class ScriptedLLM:
@@ -37,4 +40,5 @@ class LocalLLM:
         req = urllib.request.Request(f"{self.base_url}/chat/completions", data=body,
                                      headers={"Content-Type": "application/json"})
         with urllib.request.urlopen(req, timeout=self.timeout) as resp:
-            return json.loads(resp.read())["choices"][0]["message"]["content"]
+            content = json.loads(resp.read())["choices"][0]["message"]["content"] or ""
+        return THINK.sub("", content).strip()      # рассуждающие модели (qwen3, deepseek-r1) пишут <think>…</think>

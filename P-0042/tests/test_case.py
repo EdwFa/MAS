@@ -419,3 +419,11 @@ def test_doctor_ui_requires_open_questions_seen():
     at.text_area[0].input("Заключение врача").run()
     confirm = next(b for b in at.button if "Подтверждаю" in b.label)
     assert not confirm.disabled
+
+
+def test_parse_action_tolerates_wrapping():
+    from p0042.harness import parse_action
+    assert parse_action('```json\n{"tool": "egfr", "args": {}}\n```')["tool"] == "egfr"
+    assert parse_action('Вызываю инструмент: {"final": {"answer": "x", "sources": []}} готово')["final"]["answer"] == "x"
+    with pytest.raises(ValueError):
+        parse_action("просто текст {без json}")
