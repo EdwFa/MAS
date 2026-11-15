@@ -19,6 +19,24 @@ SYSTEM = """Ты готовишь справку к онкологическом
 {tools}"""
 
 
+def parse_action(reply):
+    """Первый JSON-объект в ответе модели. Малые модели оборачивают его в ```json``` или текст."""
+    try:
+        return json.loads(reply)
+    except ValueError:
+        pass
+    dec = json.JSONDecoder()
+    for i, ch in enumerate(reply):
+        if ch == "{":
+            try:
+                obj, _ = dec.raw_decode(reply[i:])
+                if isinstance(obj, dict) and ("tool" in obj or "final" in obj):
+                    return obj
+            except ValueError:
+                continue
+    raise ValueError("в ответе нет JSON-объекта с tool или final")
+
+
 def refs_in(obj):
     """Все ссылки на источники, которые агент реально видел в наблюдениях."""
     out = set()
@@ -49,7 +67,7 @@ def run(question, case_id, llm, dispatch, trace, store=None, max_steps=8, releas
         reply = llm(messages)
         messages.append({"role": "assistant", "content": reply})
         try:
-            action = json.loads(reply)
+            action = parse_action(reply)
         except ValueError:
             obs = {"isError": True, "text": "ответ не JSON: верни один JSON-объект по протоколу"}
         else:
