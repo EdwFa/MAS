@@ -378,3 +378,44 @@ def test_edge_patients(fhir):
     assert not any(r.endswith("-24") for r in p42)                     # однофамилица не просачивается
     assert fhir.read("Patient", "P-0024")["name"][0]["text"].startswith("Соколова")
     assert fhir.read("Patient", "P-0042")["name"][0]["text"].startswith("Соколова")
+
+
+# --- базовый пакет и интерфейс врача ----------------------------------------
+
+def test_baseline_package(index):
+    from p0042.package import build_package
+    p = build_package(FHIRStore(as_of="2026-11-19"), index, "P-0042", "2026-11-19")
+    assert p["board_date"] == "не назначена"
+    q = " | ".join(p["open_questions"])
+    assert "20.11" in q and "27.11" in q and "Ki-67" in q and "метформин" in q
+    renal = next(s for s in p["sections"] if s["title"] == "Почки")
+    assert any("СКФ 41" in i["text"] for i in renal["items"])
+    assert "Condition/c-09" not in p["sources"]                 # устаревший диагноз не в пакете
+    assert "DiagnosticReport/brca-7" in p["sources"]            # в четверг результат уже есть
+    young = build_package(FHIRStore(), index, "P-0077", "2026-11-16")
+    assert "не рассчитана" in json.dumps(young, ensure_ascii=False)
+    nocrea = build_package(FHIRStore(), index, "P-0063", "2026-11-16")
+    assert "нет креатинина: СКФ не рассчитана" in nocrea["open_questions"]
+
+
+def test_baseline_vs_doctor(index):
+    from p0042.evaluate import load
+    from p0042.ops import silent_compare
+    from p0042.package import build_package
+    for d in load("doctor_packages"):
+        p = build_package(FHIRStore(as_of=d["as_of"]), index, d["case"], d["as_of"])
+        assert silent_compare(p, d)["recall"] >= 0.9, d["case"]
+
+
+def test_doctor_ui_requires_open_questions_seen():
+    st = pytest.importorskip("streamlit.testing.v1")
+    from p0042 import ROOT
+    at = st.AppTest.from_file(str(ROOT / "ui" / "app.py"), default_timeout=60).run()
+    assert not at.exception
+    confirm = next(b for b in at.button if "Подтверждаю" in b.label)
+    assert confirm.disabled                                     # без отметок и текста запись закрыта
+    for cb in at.checkbox:
+        cb.check()
+    at.text_area[0].input("Заключение врача").run()
+    confirm = next(b for b in at.button if "Подтверждаю" in b.label)
+    assert not confirm.disabled
