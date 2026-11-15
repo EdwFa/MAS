@@ -3,7 +3,7 @@
 
 Протокол ответа модели — один JSON-объект:
   {"tool": "<имя>", "args": {...}}                   — вызвать инструмент
-  {"final": {"answer": "...", "sources": [...]}}     — закончить
+  {"final": {"answer": "...", "sources": [...], "open_questions": [...]}}  — закончить
 """
 import json
 
@@ -72,4 +72,5 @@ def finish(final, seen, step, trace):
     status = "complete" if sources and not unsupported else "needs_review"
     trace.event("final", step=step, status=status, unsupported=unsupported)
     return {"status": status, "steps": step, "answer": final.get("answer", ""),
-            "sources": sources, "unsupported_sources": unsupported}
+            "sources": sources, "unsupported_sources": unsupported,
+            "open_questions": list(final.get("open_questions", []))}

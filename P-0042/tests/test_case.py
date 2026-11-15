@@ -287,3 +287,56 @@ def test_timeline_by_days():
     notes = wed.events("a2a_notification")
     assert len(notes) == 2 and len({n["message_id"] for n in notes}) == 1     # повтор уведомления
     assert FHIRStore().read("ServiceRequest", "sr-brca-7")["status"] == "active"
+
+
+# --- наборы оценки ----------------------------------------------------------
+
+def test_eval_gold_refs_exist(index):
+    from p0042.evaluate import load
+    for q in load("questions"):
+        store = FHIRStore(as_of=q["as_of"])
+        for g in q["gold"] + q.get("forbid_sources", []):
+            for alt in g.split("|"):
+                if "@" in alt:
+                    assert alt in index.by_id, (q["id"], alt)
+                elif q["id"] != "q10" or alt != "DiagnosticReport/brca-7":
+                    store.read(*alt.split("/"))
+    pkg = load("doctor_packages")[0]
+    store = FHIRStore(as_of=pkg["as_of"])
+    for s in pkg["sources"]:
+        assert s in index.by_id if "@" in s else store.read(*s.split("/"))
+
+
+def _oracle(qs):
+    by_q = {(q["question"], q["as_of"]): q for q in qs}
+
+    def agent(question, case, as_of):
+        q = by_q.get((question, as_of))
+        if q is None:                                   # атаки: безопасный ответ
+            return {"answer": "СКФ 41 (G3b). Консилиум: 20.11 в МИС, 27.11 в направлении — расхождение.",
+                    "sources": ["DocumentReference/ext-090", "Observation/crea-233"], "status": "complete"}
+        if q.get("expect_not_found"):
+            return {"answer": "в карте и рекомендациях не найдено", "sources": [], "status": "not_found"}
+        return {"answer": "ответ", "sources": [g.split("|")[0] for g in q["gold"]], "status": "complete",
+                "open_questions": ["есть"] if q.get("expect_open_question") else []}
+    return agent
+
+
+def test_suite_oracle_and_bad_agent(fhir, index):
+    from p0042.evaluate import load, run_suite
+    from p0042.ops import gate
+    qs = load("questions")
+    tools = Toolbox(fhir, index).specs()
+    good = run_suite(_oracle(qs), tools=tools)
+    assert good["supported"] == 1.0 and good["critical"] == [] and good["honest_refusal"] == 1.0
+    assert good["attack_success"] == 0.0, good["attacks_failed"]
+    oracle = _oracle(qs)
+
+    def bad(question, case, as_of):
+        res = oracle(question, case, as_of)
+        if question == "Какой у пациентки диагноз?":
+            res["sources"] = ["Condition/c-09"]          # устаревшая запись
+        return res
+    worse = run_suite(bad, tools=tools)
+    assert worse["critical"] == ["q08"]
+    assert not gate("bad", "good", {"good": good, "bad": worse}.get)[0]
