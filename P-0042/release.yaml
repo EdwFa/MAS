@@ -1,0 +1,19 @@
+# Релиз = набор версий всего, что влияет на ответ (лекция 18).
+# Номер релиза пишется в каждую трассу; откатывают релиз целиком.
+release: "2026.11.1"
+model:
+  name: "qwen3:8b"          # P0042_MODEL
+  quant: "q4_K_M"
+prompts:
+  system: "p0042/harness.py:SYSTEM"
+index:
+  guidelines: "kr-demo@2026"
+mcp:
+  p0042-fhir: "0.1.0"
+thresholds:
+  route: 0.8
+  grade_hi: 0.7
+  grade_lo: 0.3
+  select_min_score: 0.3
+limits:
+  max_steps: 8
