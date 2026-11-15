@@ -10,6 +10,7 @@
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 pytest                      # 37 тестов, без сети и без модели
+python check_env.py         # практикум 0: Python, пакеты, данные, тесты и локальная модель
 ```
 
 Агент на локальной модели (любой сервер с OpenAI-совместимым API: Ollama, vLLM, llama.cpp):
