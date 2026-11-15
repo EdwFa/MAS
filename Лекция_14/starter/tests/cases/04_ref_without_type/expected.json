@@ -1,0 +1,10 @@
+{
+ "note": "imaging_ref не ссылка FHIR",
+ "verdict": "problems",
+ "must_mention": [
+  [
+   "imaging_ref",
+   "ct-117"
+  ]
+ ]
+}

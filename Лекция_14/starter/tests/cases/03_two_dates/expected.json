@@ -1,0 +1,12 @@
+{
+ "note": "спор дат в open_questions",
+ "verdict": "problems",
+ "open_questions_must": [
+  [
+   "20.11"
+  ],
+  [
+   "27.11"
+  ]
+ ]
+}

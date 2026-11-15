@@ -54,8 +54,10 @@ def refs_in(obj):
     return out
 
 
-def run(question, case_id, llm, dispatch, trace, store=None, max_steps=8, release=None):
+def run(question, case_id, llm, dispatch, trace, store=None, max_steps=8, release=None, rules=""):
+    """rules — добавка к правилам в стабильном префиксе (лекция 14: каталог скиллов)."""
     extra = active_instructions(store) if store is not None else ""
+    extra = "\n".join(x for x in (extra, rules) if x)
     messages = [{"role": "system", "content": SYSTEM.format(
                     case_id=case_id, extra=extra,
                     tools=json.dumps(dispatch.tb.specs(), ensure_ascii=False))},
@@ -91,4 +93,5 @@ def finish(final, seen, step, trace):
     trace.event("final", step=step, status=status, unsupported=unsupported)
     return {"status": status, "steps": step, "answer": final.get("answer", ""),
             "sources": sources, "unsupported_sources": unsupported,
-            "open_questions": list(final.get("open_questions", []))}
+            "open_questions": list(final.get("open_questions", [])),
+            **({"verdict": final["verdict"]} if "verdict" in final else {})}
