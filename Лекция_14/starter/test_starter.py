@@ -5,7 +5,7 @@ import pathlib
 import pytest
 
 from bench import ASK, agent, bench_triggers, score, triggered
-from skills import HERE, Sandbox, catalog, read_skill, run_script, scan
+from skills import HERE, Sandbox, catalog, read_skill, run_script, scan, validate
 
 from p0042.llm import ScriptedLLM
 from p0042.trace import Trace
@@ -35,6 +35,24 @@ def test_check_script_matches_expected(case, tmp_path):
     out = run_script(scan(), box, "package-check", "scripts/check.py", "work/package.json")
     assert out["result"]["ok"] == (exp["verdict"] == "ok")
     assert out["exit_code"] == (0 if exp["verdict"] == "ok" else 1)
+
+
+@pytest.mark.parametrize("name", ["-pdf", "pdf-", "pdf--check", "PDF", "claude-helper", "x" * 65])
+def test_validate_rejects_bad_name(name):
+    assert validate({"name": name, "description": "Проверяет."}, name)
+
+
+def test_validate_rejects_xml_and_mismatch():
+    assert validate({"name": "package-check", "description": "<b>x</b>"}, "package-check")
+    assert validate({"name": "package-check", "description": "Проверяет."}, "other")
+    assert validate({"name": "package-check", "description": "Проверяет."}, "package-check") == []
+
+
+def test_check_script_errors_are_json(tmp_path):
+    box = Sandbox(tmp_path, "P-0042")
+    (box.dir / "work" / "package.json").write_text("{не json", encoding="utf-8")
+    out = run_script(scan(), box, "package-check", "scripts/check.py", "work/package.json")
+    assert out["exit_code"] == 2 and out["result"]["ok"] is False and "error" in out["result"]
 
 
 def test_sandbox_blocks_escape(tmp_path):

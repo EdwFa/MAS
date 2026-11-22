@@ -1,13 +1,13 @@
 # Практикум 14 · Скиллы агента
 
-Лекция 14. Скиллы агента. Задание — [слайд на сайте курса](https://edwfa.github.io/mas-lecture/lecture/14/slide-26.html).
+Лекция 14. Скиллы агента. Задание — [слайд на сайте курса](https://edwfa.github.io/mas-lecture/lecture/14/slide-27.html).
 
 Скилл package-check для мини-harness из лекции 13.
 
 ## Что сделать
 
 1. **Скилл.** SKILL.md и scripts/check.py по слайдам 6, 13 и 14.
-2. **Harness.** scan, catalog и read_skill: уровни 1 и 2. run_script — в песочнице, с политикой.
+2. **Harness.** scan (с проверкой frontmatter по спецификации), catalog и read_skill: уровни 1 и 2. run_script — в песочнице, с политикой.
 3. **Срабатывание.** 20 фраз: 10 должны вызвать скилл, 10 похожих — не должны. Три прогона каждой.
 4. **Работа.** 10 пакетов с известным ответом. Таблица: без скилла и со скиллом.
 
@@ -32,17 +32,19 @@
 | --- | --- |
 | `skills/package-check/` | SKILL.md по слайдам 6 и 13, `scripts/check.py` по слайду 14, `references/fields.md` |
 | `skills/package-build/`, `skills/lab-summary/` | два похожих скилла-соседа — чтобы тест «нет» был честным |
-| `skills.py` | `scan`, `catalog`, `read_skill` (уровни 1–2), `run_script` в песочнице случая, `SkillToolbox` для диспетчера P-0042 |
+| `skills.py` | `validate` (правила name и description из спецификации agentskills.io), `scan`, `catalog`, `read_skill` (уровни 1–2), `run_script` в песочнице случая, `SkillToolbox` для диспетчера P-0042 |
 | `bench.py` | `python bench.py triggers` и `python bench.py work` — две таблицы со слайдов 17 и 18 на локальной модели |
 | `tests/triggers.csv` | 6 фраз со слайда 17 |
 | `tests/cases/` | 5 пакетов со слайда 18 с ожидаемым ответом |
 
 Что остаётся вам:
 
+0. Перед правкой скилла проверить формат: `pip install skills-ref`, затем `skills-ref validate starter/skills/package-check` (тот же разбор делает `validate` в `skills.py`).
 1. Довести `tests/triggers.csv` до 20 фраз (10 «да», 10 самых похожих «нет»).
 2. Довести `tests/cases/` до 10 пакетов с известным ответом.
 3. Прогнать `bench.py` на локальной модели; если срабатывание плохое — править только `description`.
-4. Сдать две таблицы (`triggers_report.md`, `work_report.md`) и трассу из `traces/`, где скилл сработал.
+4. Пройти чек-лист со слайда 24 и отметить в `work_report.md`, какие пункты выполнены.
+5. Сдать две таблицы (`triggers_report.md`, `work_report.md`) и трассу из `traces/`, где скилл сработал.
 
 Песочница `run_script`: скрипт — только из `scripts/` этого скилла, файл — только из `cases/<случай>/work/`, Python в изолированном режиме, без переменных окружения, лимит 10 с. Это учебная песочница, а не защита от злоумышленника: в эксплуатации скрипт запускают в контейнере без сети.
 
