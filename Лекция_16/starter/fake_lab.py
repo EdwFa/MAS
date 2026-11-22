@@ -52,7 +52,7 @@ class FakeLab:
         tid = f"t-{next(self._ids):x}"
         self.tasks[tid] = {"id": tid, "contextId": msg["contextId"], "history": [msg], "artifacts": [],
                            "status": {"state": "TASK_STATE_SUBMITTED", "timestamp": next(STAMPS)},
-                           "push": body["configuration"]["pushNotificationConfig"]}
+                           "push": body["configuration"]["taskPushNotificationConfig"]}
         self.by_message[msg["messageId"]] = tid
         self._set(tid, "TASK_STATE_WORKING")
         return self.tasks[tid]

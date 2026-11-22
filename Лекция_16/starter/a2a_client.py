@@ -80,7 +80,7 @@ class A2AClient:
             msg["taskId"] = task_id                            # продолжение той же задачи
         body = {"message": msg,
                 "configuration": {"returnImmediately": True,
-                                  "pushNotificationConfig": {"url": push_url, "token": push_token}}}
+                                  "taskPushNotificationConfig": {"url": push_url, "token": push_token}}}
         out = self._call("POST", "/message:send", body)
         return out.get("task", out)
 
