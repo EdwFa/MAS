@@ -1,4 +1,4 @@
-"""Тесты срабатывания и тесты работы скилла (лекция 14, слайды 17 и 18).
+"""Тесты срабатывания и тесты работы скилла (лекция 14, слайды 18 и 19).
 
     python bench.py triggers      # tests/triggers.csv × RUNS прогонов → triggers_report.md
     python bench.py work          # tests/cases/*  без скилла и со скиллом → work_report.md
