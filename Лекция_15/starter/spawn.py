@@ -1,4 +1,4 @@
-"""spawn_subagent и инструменты читателей (лекция 15, слайды 15–18 и 26).
+"""spawn_subagent и инструменты читателей (лекция 15, слайды 16–19 и 27).
 
 Модель — функция llm(messages) -> str, как в каркасе P-0042. Протокол субагента:
   {"tool": "<имя>", "args": {...}}   — вызвать инструмент
@@ -25,7 +25,7 @@ def tokens(text):
     return len(text) // 3 + 1
 
 
-# --- трасса-дерево: слайд 26 ------------------------------------------------
+# --- трасса-дерево: слайд 27 ------------------------------------------------
 
 class Span:
     """Фрагмент трассы: события пишутся в общую трассу с полями span и parent."""
@@ -123,7 +123,7 @@ class ReaderTools:
         return {"ref": f"DocumentReference/{doc_id}", "untrusted": True, "text": self.store.document_text(doc_id)}
 
 
-# --- субагент: слайд 18 -----------------------------------------------------
+# --- субагент: слайд 19 -----------------------------------------------------
 
 PROTOCOL = ("Ты субагент. Окно оркестратора тебе не видно: работай только по задаче ниже. "
             "Отвечай ровно одним JSON-объектом: либо вызов инструмента "
@@ -180,7 +180,7 @@ def spawn_subagent(task, contract, tools, model, max_turns=8, budget_tokens=2000
                 msg = "; ".join(f'{"/".join(map(str, e.path)) or "артефакт"}: {e.message}' for e in errors[:3])
                 span.event("schema_error", turn=turn, errors=msg)
                 window.append({"role": "user", "content": f"Ответ не по схеме: {msg}. Верни JSON по output_schema."})
-            if span.tokens > budget_tokens:                     # слайд 16: предел задаёт harness
+            if span.tokens > budget_tokens:                     # слайд 17: предел задаёт harness
                 window.append({"role": "user", "content": "Бюджет исчерпан. Верни артефакт по схеме "
                                                           "со status partial по тому, что уже найдено."})
                 reply = model(window)
