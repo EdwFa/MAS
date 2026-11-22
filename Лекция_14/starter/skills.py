@@ -8,6 +8,7 @@
 """
 import json
 import pathlib
+import re
 import shutil
 import subprocess
 import sys
@@ -22,13 +23,39 @@ from p0042.tools import Toolbox, tool                          # noqa: E402
 
 # --- уровни 1 и 2: слайд 10 -------------------------------------------------
 
+NAME_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")     # без дефиса в начале, в конце и двух подряд
+RESERVED = ("anthropic", "claude")                    # запрещены в name на платформе Claude
+XML_RE = re.compile(r"<[^>]+>")
+
+
+def validate(meta, folder):
+    """Проверки спецификации agentskills.io; список нарушений (пустой — скилл годен)."""
+    errs = []
+    name, desc = meta.get("name"), meta.get("description")
+    if not isinstance(name, str) or not 1 <= len(name) <= 64 or not NAME_RE.match(name):
+        errs.append("name: 1–64 символа, a-z, 0-9 и дефис, без дефиса по краям и двух подряд")
+    elif name != folder:
+        errs.append(f"name {name!r} не совпадает с папкой {folder!r}")
+    elif any(w in name for w in RESERVED):
+        errs.append("name: слова anthropic и claude зарезервированы")
+    if not isinstance(desc, str) or not 1 <= len(desc) <= 1024:
+        errs.append("description: 1–1024 символа")
+    elif XML_RE.search(desc):
+        errs.append("description: без XML-тегов")
+    comp = meta.get("compatibility")
+    if comp is not None and not (isinstance(comp, str) and 1 <= len(comp) <= 500):
+        errs.append("compatibility: 1–500 символов")
+    return errs
+
+
 def scan(root=HERE / "skills"):
     skills = {}
     for p in sorted(pathlib.Path(root).glob("*/SKILL.md")):
         _, front, body = p.read_text(encoding="utf-8").split("---", 2)
-        meta = yaml.safe_load(front)
-        assert meta["name"] == p.parent.name, p
-        assert len(meta["description"]) <= 1024, p
+        meta = yaml.safe_load(front) or {}
+        errs = validate(meta, p.parent.name)
+        if errs:                                      # не assert: assert выключается флагом -O
+            raise ValueError(f"{p}: " + "; ".join(errs))
         skills[meta["name"]] = {"desc": " ".join(meta["description"].split()),
                                 "dir": p.parent, "body": body.strip()}
     return skills
