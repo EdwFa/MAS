@@ -64,7 +64,7 @@ def test_sandbox_blocks_escape(tmp_path):
 
 
 def test_skill_in_trace_like_slide_16(tmp_path):
-    """read_skill → run_script → final: трасса как на слайде 18."""
+    """read_skill → run_script → final: трасса как на слайде 19."""
     pkg = json.loads((CASES / "02_no_histology" / "package.json").read_text(encoding="utf-8"))
     llm = ScriptedLLM([
         act("read_skill", name="package-check"),
