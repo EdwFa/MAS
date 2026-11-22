@@ -1,4 +1,4 @@
-"""pytest -q Лекция_15/starter — код между агентами на заглушках, без модели (слайд 20)."""
+"""pytest -q Лекция_15/starter — код между агентами на заглушках, без модели (слайд 21)."""
 import json
 import pathlib
 import sys
@@ -40,7 +40,7 @@ def store():
     return FHIRStore()
 
 
-# --- слайд 20 ----------------------------------------------------------------
+# --- слайд 21 ----------------------------------------------------------------
 
 def test_board_date_survives_handoff():
     arts = {n: spawn_subagent(task(n, "P-0042"), CON[n], None, stub(n)) for n in READERS}
@@ -60,7 +60,7 @@ def test_only_orchestrator_writes():
     assert all("chart_write" not in TOOLS[n] for n in READERS)
 
 
-# --- схема как фильтр: слайд 17 ---------------------------------------------
+# --- схема как фильтр: слайд 18 ---------------------------------------------
 
 @pytest.mark.parametrize("bad", ["lab_injection", "lab_with_advice"])
 def test_schema_filters(bad):
@@ -93,7 +93,7 @@ def test_reader_uses_only_its_tools(store):
     assert art["status"] == "ok"
 
 
-# --- отказы: слайд 21 -------------------------------------------------------
+# --- отказы: слайд 22 -------------------------------------------------------
 
 def test_timeout_one_reader(store):
     def slow_lab(window):
