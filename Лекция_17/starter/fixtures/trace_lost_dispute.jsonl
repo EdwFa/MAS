@@ -1,0 +1,8 @@
+{"turn": 1, "tool": "fhir_read"}
+{"turn": 2, "tool": "spawn_subagent", "agent": "reader"}
+{"open_question": "спор: board_date"}
+{"turn": 3, "tool": "a2a.send", "text_from": "model"}
+{"turn": 4, "tool": "read_skill"}
+{"turn": 5, "tool": "read_skill"}
+{"turn": 6, "tool": "read_skill"}
+{"turn": 7, "tool": "read_skill"}
