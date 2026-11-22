@@ -1,0 +1,6 @@
+agent,untrusted_input,patient_data,action,oversight
+reader,да,да,нет,
+assembler,да,да,нет,
+critic,да,да,нет,
+orchestrator,частично,да,chart_write,подпись врача перед записью
+lab_client,да,да,a2a.send,сообщение наружу собирает код из полей схемы

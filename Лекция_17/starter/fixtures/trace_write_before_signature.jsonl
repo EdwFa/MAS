@@ -1,0 +1,5 @@
+{"turn": 1, "tool": "fhir_read"}
+{"turn": 2, "tool": "spawn_subagent", "agent": "reader"}
+{"turn": 3, "tool": "chart_write"}
+{"event": "pause"}
+{"event": "signature", "doctor": "dr-17"}
